@@ -1,6 +1,6 @@
-QT       += core gui
+QT       += core gui serialport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++11
 
@@ -10,17 +10,20 @@ CONFIG += c++11
 
 SOURCES += \
     Controls/investigationtypebar.cpp \
+    DAQ/connectionbar.cpp \
     DAQ/readdata.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     Controls/investigationtypebar.h \
+    DAQ/connectionbar.h \
     DAQ/readdata.h \
     mainwindow.h
 
 FORMS += \
     Controls/investigationtypebar.ui \
+    DAQ/connectionbar.ui \
     mainwindow.ui
 
 # Default rules for deployment.
