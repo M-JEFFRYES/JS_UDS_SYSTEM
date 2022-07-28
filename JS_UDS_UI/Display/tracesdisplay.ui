@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>TracesDisplay</class>
- <widget name="TracesDisplay" class="QFrame">
+ <widget class="QFrame" name="TracesDisplay">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,5 +13,20 @@
   <property name="windowTitle">
    <string>Frame</string>
   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QCustomPlot" name="graph" native="true"/>
+   </item>
+  </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>libs/qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
 </ui>
