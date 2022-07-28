@@ -23,6 +23,7 @@ public:
 private slots:
     void serialReceived();
     void receiveTestType(QString);
+    void receiveExitTestType();
 
 private:
     Ui::MainWindow *ui;

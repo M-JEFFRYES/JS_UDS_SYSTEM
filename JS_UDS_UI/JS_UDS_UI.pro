@@ -13,6 +13,7 @@ SOURCES += \
     DAQ/connectionbar.cpp \
     DAQ/readdata.cpp \
     Display/tracesdisplay.cpp \
+    Display/valuedisplaybar.cpp \
     libs/qcustomplot.cpp \
     main.cpp \
     mainwindow.cpp
@@ -22,6 +23,7 @@ HEADERS += \
     DAQ/connectionbar.h \
     DAQ/readdata.h \
     Display/tracesdisplay.h \
+    Display/valuedisplaybar.h \
     libs/qcustomplot.h \
     mainwindow.h
 
@@ -29,6 +31,7 @@ FORMS += \
     Controls/investigationtypebar.ui \
     DAQ/connectionbar.ui \
     Display/tracesdisplay.ui \
+    Display/valuedisplaybar.ui \
     mainwindow.ui
 
 # Default rules for deployment.
