@@ -17,6 +17,7 @@ public:
 
 signals:
     void sendTestName(QString);
+    void sendExitTest();
 
 private slots:
     void on_selectTestButton_clicked();
