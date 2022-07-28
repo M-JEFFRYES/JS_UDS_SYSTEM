@@ -28,7 +28,55 @@
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="conBar">
+       <widget class="ConnectionBar" name="conBar">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QFrame" name="investigationControlBar">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="patientBar">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,5">
+      <item>
+       <widget class="ValueDisplayBar" name="valueDisplay">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="TracesDisplay" name="graphDisplay">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -48,6 +96,24 @@
    <class>InvestigationTypeBar</class>
    <extends>QFrame</extends>
    <header>Controls/investigationtypebar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ConnectionBar</class>
+   <extends>QFrame</extends>
+   <header>DAQ/connectionbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TracesDisplay</class>
+   <extends>QFrame</extends>
+   <header>Display/tracesdisplay.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ValueDisplayBar</class>
+   <extends>QFrame</extends>
+   <header>Display/valuedisplaybar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
