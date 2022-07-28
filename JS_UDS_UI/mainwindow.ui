@@ -28,7 +28,11 @@
        </widget>
       </item>
       <item>
+<<<<<<< HEAD
        <widget class="ConnectionBar" name="conBar">
+=======
+       <widget class="QFrame" name="conBar">
+>>>>>>> 95f1f5a81b681fef993a1bd0cedbfee46758dcbc
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -50,12 +54,15 @@
    <header>Controls/investigationtypebar.h</header>
    <container>1</container>
   </customwidget>
+<<<<<<< HEAD
   <customwidget>
    <class>ConnectionBar</class>
    <extends>QFrame</extends>
    <header>DAQ/connectionbar.h</header>
    <container>1</container>
   </customwidget>
+=======
+>>>>>>> 95f1f5a81b681fef993a1bd0cedbfee46758dcbc
  </customwidgets>
  <resources/>
  <connections/>
