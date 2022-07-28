@@ -42,7 +42,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,5">
       <item>
-       <widget class="QFrame" name="valueDisplay">
+       <widget class="ValueDisplayBar" name="valueDisplay">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -84,6 +84,12 @@
    <class>TracesDisplay</class>
    <extends>QFrame</extends>
    <header>Display/tracesdisplay.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ValueDisplayBar</class>
+   <extends>QFrame</extends>
+   <header>Display/valuedisplaybar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -52,5 +52,5 @@ void InvestigationTypeBar::on_endTestButton_clicked()
 {
     ui->selectTestButton->setText("Select Test");
     setTestSelected(false);
-
+    emit sendExitTest();
 }

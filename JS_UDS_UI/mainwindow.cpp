@@ -27,12 +27,24 @@ void MainWindow::initConnections(){
     connect(conn, SIGNAL(readyRead()), this, SLOT(serialReceived()));
     connect(ui->conBar->getConnectionButton(), &QPushButton::clicked, this, &MainWindow::connectToSerialPort);
     connect(ui->InvestigationBar, &InvestigationTypeBar::sendTestName, this, &MainWindow::receiveTestType);
+    connect(ui->InvestigationBar, &InvestigationTypeBar::sendExitTest, this, &MainWindow::receiveExitTestType);
+
 }
 
 // Test controls
 void MainWindow::receiveTestType(QString test){
     setWindowTitle(test);
+    QVector<QString> vs;
+    vs.insert(0, "Time");
+    vs.insert(0, "PSENS");
+    vs.insert(0, "VI");
+
+    ui->valueDisplay->setDisplayChannels(vs);
     qDebug() << test;
+}
+
+void MainWindow::receiveExitTestType(){
+     ui->valueDisplay->displayReset();
 }
 
 // Serial Communication
