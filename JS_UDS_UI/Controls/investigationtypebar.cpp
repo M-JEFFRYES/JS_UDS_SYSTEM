@@ -30,7 +30,6 @@ void InvestigationTypeBar::setTestSelected(bool selected){
     ui->endTestButton->setEnabled(selected);
 }
 
-
 // OBJECTS
 QString InvestigationTypeBar::getSelectedTest(){
     return ui->testsBox->currentText();

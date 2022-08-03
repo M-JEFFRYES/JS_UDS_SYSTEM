@@ -6,6 +6,8 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 
+#include <DAQ/readdata.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -34,18 +36,19 @@ void MainWindow::initConnections(){
 // Test controls
 void MainWindow::receiveTestType(QString test){
     setWindowTitle(test);
-    QVector<QString> vs;
-    vs.insert(0, "Time");
-    vs.insert(0, "PSENS");
-    vs.insert(0, "VI");
+    data_reader.setTestingType(test);
+    std::map<int, QString> channel_names = data_reader.getChannelNames();
+    ui->valueDisplay->setDisplayChannels(channel_names);
 
-    ui->valueDisplay->setDisplayChannels(vs);
-    qDebug() << test;
+    qInfo() << "Investigation setting loaded: " << test;
 }
 
 void MainWindow::receiveExitTestType(){
      ui->valueDisplay->displayReset();
+
+     qInfo() << "Investigation setting exited: " << test;
 }
+
 
 // Serial Communication
 void MainWindow::setSerialConnection(){

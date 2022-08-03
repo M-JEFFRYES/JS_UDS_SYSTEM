@@ -39,9 +39,12 @@ void ValueDisplayBar::initDisplays(){
     }
 }
 
-void ValueDisplayBar::setDisplayChannels(QVector<QString> display_names){
+void ValueDisplayBar::setDisplayChannels(std::map<int, QString> display_names){
+
     this->display_names = display_names;
-    for (int i=0; i<display_names.length(); i++){
+    no_display_names = this->display_names.size();
+
+    for (int i=0; i<no_display_names; i++){
         display_labels[i]->setVisible(true);
         display_numbers[i]->setVisible(true);
         display_labels[i]->setText(display_names[i]);
@@ -55,7 +58,7 @@ void ValueDisplayBar::displayReset(){
 }
 
 void ValueDisplayBar::updateNumbers(std::map<QString, double> data){
-    for (int i=0; i<display_names.length(); i++){
+    for (int i=0; i<no_display_names; i++){
         int pos = variable_mapping[display_names[i]];
         double val = data[display_names[i]];
         display_numbers[pos]->display(val);

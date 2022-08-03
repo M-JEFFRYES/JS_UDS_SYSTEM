@@ -8,44 +8,36 @@ ReadData::ReadData()
 // FUNCTIONALITY
 void ReadData::setTestingType(QString testing_type){
     if (testing_type == "Pressure"){
-        setPressureMeasurementTest();
+        QVector<QString> names = {"Time", "PSENS"};
+        setChannelNames(names);
+
     }  else if (testing_type == "Uroflowmetry"){
-        setUroflowmetryTest();
+        QVector<QString> names = {"Time", "UF_RAW"};
+        setChannelNames(names);
+
     }  else if (testing_type == "Volume Infused"){
-        setVolumeInfusedTest();
+        QVector<QString> names = {"Time", "VI_RAW"};
+        setChannelNames(names);
+
     }  else if (testing_type == "Pump"){
-        setPumpTest();
+        QVector<QString> names = {"Time", "PWM", "UF_RAW"};
+        setChannelNames(names);
+
+    }  else if (testing_type == "UDS Investigation"){
+        QVector<QString> names = {"Time", "PBLAD", "PABD", "PDET","VI", "VV", "Q"};
+        setChannelNames(names);
     }
 }
 
-void ReadData::setPressureMeasurementTest(){
-    number_data_channels = 2;
+void ReadData::setChannelNames(QVector<QString> names){
     channel_names.clear();
-    channel_names.append("Time");
-    channel_names.append("PSENS");
+    number_data_channels = names.length();
+    for (int i=0; i<number_data_channels; i++){
+        channel_names[i] = names[i];
+    }
 }
 
-void ReadData::setUroflowmetryTest(){
-    number_data_channels = 2;
-    channel_names.clear();
-    channel_names.append("Time");
-    channel_names.append("UF_RAW");
-}
 
-void ReadData::setVolumeInfusedTest(){
-    number_data_channels = 2;
-    channel_names.clear();
-    channel_names.append("Time");
-    channel_names.append("VI_RAW");
-}
-
-void ReadData::setPumpTest(){
-    number_data_channels = 3;
-    channel_names.clear();
-    channel_names.append("Time");
-    channel_names.append("PWM");
-    channel_names.append("UF_RAW");
-}
 
 void ReadData::readSerialData(QString data_string, int event, std::map<QString, double> sensor_zeros){
     QStringList values = data_string.split(",");
@@ -58,6 +50,10 @@ void ReadData::readSerialData(QString data_string, int event, std::map<QString, 
         value -= sensor_zeros[variable];
         current_dataset[variable] = value;
     }
+}
+
+std::map<int, QString> ReadData::getChannelNames(){
+    return channel_names;
 }
 
 // SLOTS
