@@ -28,13 +28,14 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void initConnections();
+    void setSizes();
 
     void setSerialConnection();
     void connectToSerialPort();
 
 
+    QString test;
     ReadData data_reader;
-    std::map<QString, double> channel_zeros;
     int event_code;
 
     // connection

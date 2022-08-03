@@ -14,8 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     initConnections();
-    channel_zeros["Time"] = 0.0;
-    channel_zeros["PSENS"] = 0.0;
+    setSizes();
     event_code = 1;
 }
 
@@ -33,12 +32,37 @@ void MainWindow::initConnections(){
 
 }
 
+void MainWindow::setSizes(){
+    std::map<QString, int> sizes;
+    sizes["header_min"] = 25;
+    sizes["header_max"] = 200;
+    sizes["inforbar_min"] = 25;
+    sizes["inforbar_max"] = 200;
+
+    sizes["footer_min"] = 25;
+    sizes["footer_max"] = 200;
+
+    ui->InvestigationBar->setMinimumHeight(sizes["header_min"]);
+    ui->InvestigationBar->setMaximumHeight(sizes["header_max"]);
+    ui->conBar->setMinimumHeight(sizes["header_min"]);
+    ui->conBar->setMaximumHeight(sizes["header_max"]);
+
+    ui->investigationControlBar->setMinimumHeight(sizes["inforbar_min"]);
+    ui->investigationControlBar->setMaximumHeight(sizes["inforbar_max"]);
+    ui->patientBar->setMinimumHeight(sizes["inforbar_min"]);
+    ui->patientBar->setMaximumHeight(sizes["inforbar_max"]);
+
+
+
+}
+
+
 // Test controls
 void MainWindow::receiveTestType(QString test){
+    this->test = test;
     setWindowTitle(test);
     data_reader.setTestingType(test);
-    std::map<int, QString> channel_names = data_reader.getChannelNames();
-    ui->valueDisplay->setDisplayChannels(channel_names);
+    ui->valueDisplay->setDisplayChannels(data_reader.getChannelNames());
 
     qInfo() << "Investigation setting loaded: " << test;
 }
@@ -62,8 +86,7 @@ void MainWindow::setSerialConnection(){
     conn->setParity(QSerialPort::NoParity);
     conn->setStopBits(QSerialPort::OneStop);
     conn->setFlowControl(QSerialPort::NoFlowControl);
-    qDebug() << "Serial connection parameters set";
-    data_reader.setTestingType("Pressure");
+    qInfo() << "Serial connection parameters set (" << portName << "-" << baudRate << ")";
 }
 
 void MainWindow::connectToSerialPort(){
@@ -95,9 +118,10 @@ void MainWindow::serialReceived(){
             serialBuffer += QString::fromStdString(serialData.toStdString());
 
         } else {
-            std::map<QString, double> curr_dataset = data_reader.readCurrentDataset(bufferSplit.value(1), event_code, channel_zeros);
 
-            qDebug() << "Time: " << curr_dataset["Time"] << " PSENS: " << curr_dataset["PSENS"];
+            std::map<QString, double> curr_dataset = data_reader.readCurrentDataset(bufferSplit.value(1), event_code, false);
+
+            ui->valueDisplay->updateNumbers(curr_dataset);
 
             serialBuffer = "";
         }
