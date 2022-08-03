@@ -33,8 +33,34 @@ void MainWindow::initConnections(){
 
 }
 
+void MainWindow::setSizes(){
+    std::map<QString, int> sizes;
+    sizes["header_min"] = 25;
+    sizes["header_max"] = 200;
+    sizes["inforbar_min"] = 25;
+    sizes["inforbar_max"] = 200;
+
+    sizes["footer_min"] = 25;
+    sizes["footer_max"] = 200;
+
+    ui->InvestigationBar->setMinimumHeight(sizes["header_min"]);
+    ui->InvestigationBar->setMaximumHeight(sizes["header_max"]);
+    ui->conBar->setMinimumHeight(sizes["header_min"]);
+    ui->conBar->setMaximumHeight(sizes["header_max"]);
+
+    ui->investigationControlBar->setMinimumHeight(sizes["inforbar_min"]);
+    ui->investigationControlBar->setMaximumHeight(sizes["inforbar_max"]);
+    ui->patientBar->setMinimumHeight(sizes["inforbar_min"]);
+    ui->patientBar->setMaximumHeight(sizes["inforbar_max"]);
+
+
+
+}
+
+
 // Test controls
 void MainWindow::receiveTestType(QString test){
+    this->test = test;
     setWindowTitle(test);
     data_reader.setTestingType(test);
     std::map<int, QString> channel_names = data_reader.getChannelNames();
