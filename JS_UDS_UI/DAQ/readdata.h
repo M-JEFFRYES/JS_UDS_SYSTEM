@@ -2,6 +2,8 @@
 #define READDATA_H
 
 #include <QObject>
+#include <QVector>
+
 
 class ReadData
 {
