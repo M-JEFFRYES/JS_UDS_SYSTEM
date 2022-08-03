@@ -36,7 +36,6 @@ private:
 
     QString test;
     ReadData data_reader;
-    std::map<QString, double> channel_zeros;
     int event_code;
 
     // connection

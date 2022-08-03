@@ -1,6 +1,8 @@
 #include "valuedisplaybar.h"
 #include "ui_valuedisplaybar.h"
 
+#include <QDebug>
+
 ValueDisplayBar::ValueDisplayBar(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::ValueDisplayBar)
@@ -34,9 +36,13 @@ void ValueDisplayBar::initDisplays(){
     for (int i=0; i<display_labels.length(); i++){
         display_labels[i]->setText("-");
         display_numbers[i]->display(0.0);
+        display_numbers[i]->setDecMode();
+        display_numbers[i]->setSmallDecimalPoint(true);
         display_labels[i]->setVisible(false);
         display_numbers[i]->setVisible(false);
+
     }
+
 }
 
 void ValueDisplayBar::setDisplayChannels(std::map<int, QString> display_names){
@@ -58,9 +64,14 @@ void ValueDisplayBar::displayReset(){
 }
 
 void ValueDisplayBar::updateNumbers(std::map<QString, double> data){
+    QString name;
+    int pos;
+    double val;
+
     for (int i=0; i<no_display_names; i++){
-        int pos = variable_mapping[display_names[i]];
-        double val = data[display_names[i]];
+        name = display_names[i];
+        pos = variable_mapping[name];
+        val = data[name];
         display_numbers[pos]->display(val);
     }
 }

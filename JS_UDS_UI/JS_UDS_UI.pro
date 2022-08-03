@@ -12,6 +12,7 @@ SOURCES += \
     Controls/investigationtypebar.cpp \
     DAQ/connectionbar.cpp \
     DAQ/readdata.cpp \
+    Display/footerdisplay.cpp \
     Display/tracesdisplay.cpp \
     Display/valuedisplaybar.cpp \
     libs/qcustomplot.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     Controls/investigationtypebar.h \
     DAQ/connectionbar.h \
     DAQ/readdata.h \
+    Display/footerdisplay.h \
     Display/tracesdisplay.h \
     Display/valuedisplaybar.h \
     libs/qcustomplot.h \
@@ -30,6 +32,7 @@ HEADERS += \
 FORMS += \
     Controls/investigationtypebar.ui \
     DAQ/connectionbar.ui \
+    Display/footerdisplay.ui \
     Display/tracesdisplay.ui \
     Display/valuedisplaybar.ui \
     mainwindow.ui
