@@ -17,7 +17,7 @@ public:
     explicit ValueDisplayBar(QWidget *parent = nullptr);
     ~ValueDisplayBar();
 
-    void setDisplayChannels(QVector<QString> display_names);
+    void setDisplayChannels(std::map<int, QString> display_names);
     void displayReset();
     void updateNumbers(std::map<QString, double> data);
 
@@ -26,7 +26,8 @@ private:
 
     void initDisplays();
 
-    QVector<QString> display_names;
+    int no_display_names;
+    std::map<int, QString> display_names;
     QVector<QLabel*> display_labels;
     QVector<QLCDNumber*> display_numbers;
     std::map<QString, double> current_dataset;
