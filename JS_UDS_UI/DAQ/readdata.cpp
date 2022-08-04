@@ -80,6 +80,7 @@ void ReadData::readSerialData(QString data_string, int event, bool zero_sensors)
         value -= channel_zeros[variable];
         current_dataset[variable] = value;
     }
+    current_dataset["EVENT"] = event;
 }
 
 std::map<int, QString> ReadData::getChannelNames(){

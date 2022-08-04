@@ -32,6 +32,7 @@ private:
 
     void setSerialConnection();
     void connectToSerialPort();
+    void processIncomingData(QString data_string, int event, bool zero_sensors);
 
 
     QString test;
