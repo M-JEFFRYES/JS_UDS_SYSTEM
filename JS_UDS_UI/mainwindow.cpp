@@ -51,9 +51,6 @@ void MainWindow::setSizes(){
     ui->investigationControlBar->setMaximumHeight(sizes["inforbar_max"]);
     ui->patientBar->setMinimumHeight(sizes["inforbar_min"]);
     ui->patientBar->setMaximumHeight(sizes["inforbar_max"]);
-
-
-
 }
 
 
@@ -62,14 +59,17 @@ void MainWindow::receiveTestType(QString test){
     this->test = test;
     setWindowTitle(test);
     data_reader.setTestingType(test);
-    ui->valueDisplay->setDisplayChannels(data_reader.getChannelNames());
+    std::map<int, QString> var_names = data_reader.getChannelNames();
+    QVector<QVector<double>> var_ranges = data_reader.getChannelRanges();
+    ui->valueDisplay->setDisplayChannels(var_names);
+    ui->graphDisplay->setChannelNames(var_names, var_ranges);
 
     qInfo() << "Investigation setting loaded: " << test;
 }
 
 void MainWindow::receiveExitTestType(){
      ui->valueDisplay->displayReset();
-
+     setWindowTitle("JS Urodynamics Without Borders");
      qInfo() << "Investigation setting exited: " << test;
 }
 

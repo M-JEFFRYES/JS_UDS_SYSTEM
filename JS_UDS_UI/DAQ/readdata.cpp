@@ -11,25 +11,44 @@ ReadData::ReadData()
 void ReadData::setTestingType(QString testing_type){
     qInfo() << "Setting type" << testing_type;
 
+    QVector<QString> names;
+    QVector<QVector<double>> ranges;
     if (testing_type == "Pressure"){
-        QVector<QString> names = {"Time", "PSENS"};
+        names = {"Time", "PSENS"};
+        ranges = {{0.0, 100.0}};
         setChannelNames(names);
+        setChannelRanges(ranges);
 
     }  else if (testing_type == "Uroflowmetry"){
-        QVector<QString> names = {"Time", "UF_RAW"};
+        names = {"Time", "UF_RAW"};
+        ranges = {{0.0, 500.0}};
         setChannelNames(names);
+        setChannelRanges(ranges);
 
     }  else if (testing_type == "Volume Infused"){
-        QVector<QString> names = {"Time", "VI_RAW"};
+        names = {"Time", "VI_RAW"};
+        ranges = {{0.0, 500.0}};
         setChannelNames(names);
+        setChannelRanges(ranges);
 
     }  else if (testing_type == "Pump"){
-        QVector<QString> names = {"Time", "PWM", "UF_RAW"};
+        names = {"Time", "PWM", "UF_RAW"};
+        ranges = {{0.0, 255.0}, {0.0, 500.0}};
         setChannelNames(names);
+        setChannelRanges(ranges);
 
     }  else if (testing_type == "UDS Investigation"){
-        QVector<QString> names = {"Time", "PBLAD", "PABD", "PDET","VI", "VV", "Q"};
+        names = {"Time", "PBLAD", "PABD", "PDET","VI", "VV", "Q"};
+        /*ranges.append({0.0, 100.0});
+        ranges.append({0.0, 100.0});
+        ranges.append({0.0, 100.0});
+        ranges.append({0.0, 500.0});
+        ranges.append({0.0, 500.0});
+        ranges.append({0.0, 50.0});
+        */
+        ranges = {{0.0, 100.0}, {0.0, 100.0}, {0.0, 100.0}, {0.0, 500.0}, {0.0, 500.0}, {0.0, 50.0}};
         setChannelNames(names);
+        setChannelRanges(ranges);
     }
 }
 
@@ -41,6 +60,12 @@ void ReadData::setChannelNames(QVector<QString> names){
         channel_zeros[names[i]] = 0.0;
     }
 }
+
+void ReadData::setChannelRanges(QVector<QVector<double>> ranges){
+    channel_ranges = ranges;
+}
+
+
 
 void ReadData::readSerialData(QString data_string, int event, bool zero_sensors){
     QStringList values = data_string.split(",");
@@ -59,6 +84,10 @@ void ReadData::readSerialData(QString data_string, int event, bool zero_sensors)
 
 std::map<int, QString> ReadData::getChannelNames(){
     return channel_names;
+}
+
+QVector<QVector<double>> ReadData::getChannelRanges(){
+    return channel_ranges;
 }
 
 std::map<QString, double> ReadData::getChannelZeros(){
