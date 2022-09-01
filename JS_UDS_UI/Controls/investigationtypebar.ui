@@ -14,6 +14,12 @@
    <string>Frame</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
    <item>
     <widget class="QPushButton" name="selectTestButton">
      <property name="sizePolicy">
@@ -34,19 +40,6 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="endTestButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>End Investigation</string>
      </property>
     </widget>
    </item>

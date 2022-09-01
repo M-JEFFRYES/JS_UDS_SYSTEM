@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "Popups/patientinfoentry.h"
+
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 
@@ -20,21 +22,30 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void sendConnectionOpen(bool);
+
 private slots:
     void serialReceived();
     void receiveTestType(QString);
     void receiveExitTestType();
+    void receiveOpenNewPatient();
+    void receiveOpenExisitngPatient();
+    void receiveClosPatient();
 
 private:
     Ui::MainWindow *ui;
     void initConnections();
+    int calculatePixels(double length, double percentage);
+    void calculateObjectSizes();
     void setSizes();
 
     void setSerialConnection();
     void connectToSerialPort();
     void processIncomingData(QString data_string, int event, bool zero_sensors);
 
-
+    QString generic_window_title;
+    std::map<QString, int> pixel_sizes;
     QString test;
     ReadData data_reader;
     int event_code;

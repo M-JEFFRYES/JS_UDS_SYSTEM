@@ -22,6 +22,7 @@ ConnectionBar::~ConnectionBar()
 void ConnectionBar::initButtons(){
     ui->connectButton->setCheckable(true);
     getOpenPorts();
+    setTestSelected(false);
 }
 
 void ConnectionBar::setBarHeights(int minimum, int maximum){
@@ -39,6 +40,12 @@ void ConnectionBar::setDisconnected(){
     ui->connectButton->setText("Connect");
     ui->refreshButton->setEnabled(true);
     ui->portNamesBox->setEnabled(true);
+}
+
+void ConnectionBar::setTestSelected(bool selected){
+    ui->connectButton->setEnabled(selected);
+    ui->refreshButton->setEnabled(selected);
+    ui->portNamesBox->setEnabled(selected);
 }
 
 void ConnectionBar::setEnterRecordingMode(bool start){
@@ -94,3 +101,8 @@ void ConnectionBar::on_refreshButton_clicked()
 {
     getOpenPorts();
 }
+
+void ConnectionBar::receiveTestSelected(bool selected){
+    setTestSelected(selected);
+}
+

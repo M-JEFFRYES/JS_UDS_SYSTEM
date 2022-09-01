@@ -16,6 +16,7 @@ TracesDisplay::~TracesDisplay()
 void TracesDisplay::setChannelNames(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, int sample_window_length){
     no_samples = sample_window_length;
     no_channels = var_names.size();
+    y_channel_names.clear();
     for (int i=1; i < (no_channels); i++){
         y_channel_names.append(var_names[i]);
     }
@@ -27,7 +28,6 @@ void TracesDisplay::setChannelNames(std::map<int, QString> var_names, QVector<QV
     time_dataset.reserve(no_samples);
     dataset.reserve(y_channel_names.length());
     zeroDataset();
-
 
     initGraph();
 }
@@ -54,6 +54,7 @@ void TracesDisplay::calculateScalingY(QVector<QVector<double>> var_ranges){
     QString name;
     QVector<double> vals;
 
+
     for (int i=0; i<y_channel_names.length(); i++){
         name = y_channel_names[i];
         vals = var_ranges.at(i);
@@ -62,6 +63,7 @@ void TracesDisplay::calculateScalingY(QVector<QVector<double>> var_ranges){
         scale = actual_range/ (display_max - display_min);
         y_scales[name] = scale;
     }
+
 }
 
 void TracesDisplay::zeroDataset(){
@@ -90,7 +92,7 @@ void TracesDisplay::initGraph(){
     setGraphFrame();
     setHorizontalAxisLines();
     setChannelTraces();
-
+    graph_rect->axis(QCPAxis::atLeft)->setRange(0, max_y);
     ui->graph->replot();
 }
 
@@ -121,7 +123,7 @@ void TracesDisplay::setHorizontalAxisLines(){
         line->point2->setCoords(no_samples, offset);
         horizontal_axes_lines.append(line);
     }
-    graph_rect->axis(QCPAxis::atLeft)->setRange(QCPRange(0, max_y));
+
 
 }
 
@@ -137,9 +139,6 @@ void TracesDisplay::setChannelTraces(){
 }
 
 
-
-
-
 // loading
 
 void TracesDisplay::addDataset(std::map<QString, double> curr_dataset){
@@ -152,7 +151,7 @@ void TracesDisplay::addDataset(std::map<QString, double> curr_dataset){
     double value;
     for (int i=0; i < y_channel_names.length(); i++){
         name = y_channel_names.at(i);
-        value = (current_dataset[name] * y_scales[name]) + y_offsets[name];
+        value = current_dataset[name];
         dataset[i].pop_front();
         dataset[i].push_back(value);
         qDebug() << name << ": " << value;

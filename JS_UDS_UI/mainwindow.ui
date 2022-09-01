@@ -18,7 +18,7 @@
     <item>
      <layout class="QHBoxLayout" name="topBarLayout">
       <item>
-       <widget class="InvestigationTypeBar" name="InvestigationBar">
+       <widget class="InvestigationTypeBar" name="investigationBarT">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
@@ -52,40 +52,20 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QFrame" name="investigationControlBar">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QFrame" name="patientBar">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="InvestigationBar" name="investigationBarC">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,5">
@@ -156,6 +136,12 @@
    <class>ValueDisplayBar</class>
    <extends>QFrame</extends>
    <header>Display/valuedisplaybar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>InvestigationBar</class>
+   <extends>QFrame</extends>
+   <header>Controls/investigationbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

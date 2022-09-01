@@ -6,7 +6,7 @@ InvestigationTypeBar::InvestigationTypeBar(QWidget *parent) :
     ui(new Ui::InvestigationTypeBar)
 {
     ui->setupUi(this);
-    ui->endTestButton->setEnabled(false);
+    ui->selectTestButton->setCheckable(true);
     setTestOptions();
 }
 
@@ -24,32 +24,43 @@ void InvestigationTypeBar::setTestOptions(){
     ui->testsBox->addItem("Test - Pump");
 }
 
-void InvestigationTypeBar::setTestSelected(bool selected){
-    ui->selectTestButton->setEnabled(!selected);
-    ui->testsBox->setEnabled(!selected);
-    ui->endTestButton->setEnabled(selected);
+void InvestigationTypeBar::setTestSelected(){
+    current_test_type = ui->testsBox->currentText().split(" - ")[1];
+    ui->selectTestButton->setText("Exit Test");
+    ui->testsBox->setEnabled(false);
+    emit sendTestName(current_test_type);
 }
+
+void InvestigationTypeBar::exitTestSelected(){
+    current_test_type = "";
+    ui->selectTestButton->setText("Select Investigation Type");
+    ui->testsBox->setEnabled(true);
+    emit sendExitTest();
+}
+
+void InvestigationTypeBar::setConnectionOpen(bool open){
+    ui->selectTestButton->setEnabled(!open);
+}
+
 
 // OBJECTS
 QString InvestigationTypeBar::getSelectedTest(){
-    return ui->testsBox->currentText();
+    return current_test_type;
 }
 
 // SLOTS
 void InvestigationTypeBar::on_selectTestButton_clicked()
 {
-    if (ui->selectTestButton->text() != ""){
-        QString test_type = ui->testsBox->currentText().split(" - ")[1];
-        ui->selectTestButton->setText(test_type);
-        setTestSelected(true);
-        emit sendTestName(test_type);
+    if (ui->selectTestButton->isChecked()){
+        setTestSelected();
+        emit sendTestSelected(true);
+    }
+    else {
+        exitTestSelected();
+        emit sendTestSelected(false);
     }
 }
 
-
-void InvestigationTypeBar::on_endTestButton_clicked()
-{
-    ui->selectTestButton->setText("Select Test");
-    setTestSelected(false);
-    emit sendExitTest();
+void InvestigationTypeBar::receiveConnectionOpen(bool open){
+     setConnectionOpen(open);
 }

@@ -18,17 +18,24 @@ public:
 signals:
     void sendTestName(QString);
     void sendExitTest();
+    void sendTestSelected(bool);
+
+public slots:
+    void receiveConnectionOpen(bool open);
 
 private slots:
     void on_selectTestButton_clicked();
-    void on_endTestButton_clicked();
+
 
 private:
     Ui::InvestigationTypeBar *ui;
     void setTestOptions();
-    void setTestSelected(bool selected);
+    void setTestSelected();
+    void exitTestSelected();
+    void setConnectionOpen(bool open);
 
     QString getSelectedTest();
+    QString current_test_type;
 
 };
 

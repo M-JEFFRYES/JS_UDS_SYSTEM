@@ -27,6 +27,10 @@ public:
     QPushButton* getRefreshButton();
     QString getSelectedPort();
 
+
+public slots:
+    void receiveTestSelected(bool selected);
+
 private slots:
     void on_connectButton_clicked();
     void on_refreshButton_clicked();
@@ -36,6 +40,7 @@ private:
     void initButtons();
     void setConnected();
     void setDisconnected();
+    void setTestSelected(bool selected);
     void getOpenPorts();
 };
 
