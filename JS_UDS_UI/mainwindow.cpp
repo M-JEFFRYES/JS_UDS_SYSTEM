@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "Popups/patientinfoentry.h"
+#include "DAQ/writedata.h"
 
 #include <QDebug>
 
@@ -15,12 +16,36 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    generic_window_title = "Jeffryes-Solomon Low Cost Urodynamics Machine";
+    setWindowTitle(generic_window_title);
+
     initConnections();
     calculateObjectSizes();
     setSizes();
     event_code = 1;
-    generic_window_title = "Jeffryes-Solomon Low Cost Urodynamics Machine";
-    setWindowTitle(generic_window_title);
+
+    QDir curr_dir = QDir(".");
+    curr_dir.cdUp();
+    curr_dir.cd("data");
+    data_writer.setFileDirectory(curr_dir.absolutePath());
+    write_to_csv=false;
+    csv_created=false;
+    readSerialData = false;
+    patient_entered = false;
+
+    ui->graphDisplay->setBackgroundColour(30,30,30);
+    ui->graphDisplay->setHorizontalAxesColour(QPen(QColor(255,255,255)));
+    QVector<QPen> line_colours ={
+        QPen(QColor(0,0,255)),
+        QPen(QColor(255,0,0)),
+        QPen(QColor(0,255,0)),
+        QPen(QColor(255,165,0)),
+        QPen(QColor(230,230,255)),
+        QPen(QColor(255,255,0)),
+        QPen(QColor(150,75,0))
+    };
+    ui->valueDisplay->setVarColours(line_colours);
+    ui->graphDisplay->setDataLineColours(line_colours);
 }
 
 MainWindow::~MainWindow()
@@ -29,20 +54,33 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::initConnections(){
-    conn = new QSerialPort();
-    connect(conn, SIGNAL(readyRead()), this, SLOT(serialReceived()));
-    connect(ui->conBar->getConnectionButton(), &QPushButton::clicked, this, &MainWindow::connectToSerialPort);
-
+    // 1 select test type
     connect(ui->investigationBarT, &InvestigationTypeBar::sendTestName, this, &MainWindow::receiveTestType);
     connect(ui->investigationBarT, &InvestigationTypeBar::sendExitTest, this, &MainWindow::receiveExitTestType);
     connect(this, &MainWindow::sendConnectionOpen, ui->investigationBarT, &InvestigationTypeBar::receiveConnectionOpen);
     connect(ui->investigationBarT, &InvestigationTypeBar::sendTestSelected, ui->conBar, &ConnectionBar::receiveTestSelected);
 
+    // 2 serial comms
+    conn = new QSerialPort();
+    connect(conn, SIGNAL(readyRead()), this, SLOT(serialReceived()));
+    connect(ui->conBar->getConnectionButton(), &QPushButton::clicked, this, &MainWindow::connectToSerialPort);
+
+    // 3 patient management
+    connect(this, &MainWindow::sendSetUDSView, ui->investigationBarC, &InvestigationBar::setUDSView);
+    connect(this, &MainWindow::sendSetTestView, ui->investigationBarC, &InvestigationBar::setTestView);
     connect(ui->investigationBarC, &InvestigationBar::sendOpenNewPatient, this, &MainWindow::receiveOpenNewPatient);
     connect(ui->investigationBarC, &InvestigationBar::sendOpenExistingPatient, this, &MainWindow::receiveOpenExisitngPatient);
-    connect(ui->investigationBarC, &InvestigationBar::sendClosePatient, this, &MainWindow::receiveClosPatient);
+    connect(ui->investigationBarC, &InvestigationBar::sendClosePatient, this, &MainWindow::receiveClosePatient);
+
+
+    // 4 recording
+    connect(ui->investigationBarC, &InvestigationBar::sendStartRecording, this, &MainWindow::recieveStartRecordingCSV);
+    connect(ui->investigationBarC, &InvestigationBar::sendStopRecording, this, &MainWindow::recieveStopRecordingCSV);
+    connect(this, &MainWindow::sendEnterRecording, ui->conBar, &ConnectionBar::setEnterRecordingMode);
 }
 
+
+// UI
 int MainWindow::calculatePixels(double length, double percentage){
     return (int) (length * percentage);
 }
@@ -94,17 +132,21 @@ void MainWindow::setSizes(){
     ui->investigationBarC->setMaximumHeight(pixel_sizes["inforbar_max"]);
 }
 
-
-
-// Test controls
+// 1 Test type controls
 void MainWindow::receiveTestType(QString test){
     this->test = test;
     setWindowTitle(test);
+
     data_reader.setTestingType(test);
     std::map<int, QString> var_names = data_reader.getChannelNames();
     QVector<QVector<double>> var_ranges = data_reader.getChannelRanges();
+
+    data_writer.setVariableTitles(var_names);
     ui->valueDisplay->setDisplayChannels(var_names);
-    ui->graphDisplay->setChannelNames(var_names, var_ranges, 200);
+
+    ui->graphDisplay->setSampleWindowLength(200);
+    ui->graphDisplay->setChannelNamesAndRanges(var_names, var_ranges);
+    //ui->graphDisplay->setChannelNames(var_names, var_ranges, 200);
     ui->investigationBarC->setView(test);
 
     qInfo() << "Investigation setting loaded: " << test;
@@ -117,38 +159,7 @@ void MainWindow::receiveExitTestType(){
      qInfo() << "Investigation setting exited: " << test;
 }
 
-// patient controls
-
-void MainWindow::receiveOpenNewPatient(){
-    qInfo() << "Creating new patient popup";
-    PatientInfoEntry patientInfoPopup;
-    int dialogCode = patientInfoPopup.exec();
-
-    if(dialogCode == QDialog::Accepted) {
-        qInfo() << "Patient information entered successfully";
-        std::map<QString, QString> patient_information = patientInfoPopup.getPatientInformation();
-        setWindowTitle(patientInfoPopup.getWindowTitle());
-        ui->investigationBarC->setUDSReadyView();
-
-        // Manage Pat info
-
-    } else if (dialogCode == QDialog::Rejected) {
-        ui->investigationBarC->resetView();
-        qInfo() << "Patient information entry failed";
-    }
-}
-
-void MainWindow::receiveOpenExisitngPatient(){
-
-}
-
-void MainWindow::receiveClosPatient(){
-    ui->investigationBarC->resetView();
-    setWindowTitle(generic_window_title);
-}
-
-
-// Serial Communication
+// 2 Connection Settings
 void MainWindow::setSerialConnection(){
     serialBuffer = "";
     baudRate = 9600;
@@ -168,15 +179,27 @@ void MainWindow::connectToSerialPort(){
         qInfo() << "Open Serial connection";
         setSerialConnection();
         readSerialData = true;
+        ui->investigationBarC->setUDSReadyView(patient_entered);
 
         emit sendConnectionOpen(true);
-
+        if (test == "UDS Investigation"){
+            emit sendSetUDSView();
+        } else {
+            emit sendSetTestView();
+        }
     } else {
         qInfo() << "Close Serial connection";
         readSerialData = false;
         conn->close();
+        ui->investigationBarC->resetView();
         emit sendConnectionOpen(false);
     }
+}
+
+void MainWindow::closeSerialConnection(){
+    ui->conBar->setDisconnected();
+    conn->close();
+    readSerialData = false;
 }
 
 void MainWindow::serialReceived(){
@@ -203,12 +226,68 @@ void MainWindow::serialReceived(){
 
 void MainWindow::processIncomingData(QString data_string, int event, bool zero_sensors){
     std::map<QString, double> curr_dataset = data_reader.readCurrentDataset(data_string, event_code, false);
-    qDebug() << curr_dataset["PBLAD"];
+
     ui->valueDisplay->updateNumbers(curr_dataset);
     ui->graphDisplay->addDataset(curr_dataset);
 
+    if (write_to_csv){data_writer.writeDataToCSV(curr_dataset);}
+
     serialBuffer = "";
 
-    qDebug() << event << zero_sensors;
+    //qDebug() << event << zero_sensors;
 
+}
+
+// 3 patient controls
+
+void MainWindow::receiveOpenNewPatient(){
+    qInfo() << "Creating new patient popup";
+    PatientInfoEntry patientInfoPopup;
+    int dialogCode = patientInfoPopup.exec();
+
+    if(dialogCode == QDialog::Accepted) {
+        patient_entered = true;
+        qInfo() << "Patient information entered successfully";
+        std::map<QString, QString> patient_information = patientInfoPopup.getPatientInformation();
+        setWindowTitle(patientInfoPopup.getWindowTitle());
+
+        ui->investigationBarC->setUDSReadyView(readSerialData);
+        data_writer.loadMetaData(patient_information);
+
+    } else if (dialogCode == QDialog::Rejected) {
+        patient_entered = false;
+        ui->investigationBarC->setUDSReadyView(patient_entered);
+        ui->investigationBarC->resetView();
+        qInfo() << "Patient information entry failed";
+    }
+}
+
+void MainWindow::receiveOpenExisitngPatient(){
+    closeSerialConnection();
+
+    // add code to clear graph and load patient
+}
+
+void MainWindow::receiveClosePatient(){
+    ui->investigationBarC->resetView();
+    if (test == "UDS Investigation"){
+        emit sendSetUDSView();
+    } else {
+        emit sendSetTestView();
+    }
+    ui->investigationBarC->setUDSReadyView(false);
+    setWindowTitle(generic_window_title);
+}
+
+// 4 Manage recording
+void MainWindow::recieveStartRecordingCSV(){
+    emit sendEnterRecording(true);
+    data_writer.createCSVFile();
+    write_to_csv=data_writer.checkCSVCreated();
+}
+
+void MainWindow::recieveStopRecordingCSV(){
+    emit sendEnterRecording(false);
+    data_writer.setEndCSVRecording();
+    write_to_csv=data_writer.checkCSVCreated();
 }

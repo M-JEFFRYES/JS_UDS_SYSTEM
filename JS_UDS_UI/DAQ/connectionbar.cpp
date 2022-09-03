@@ -49,11 +49,7 @@ void ConnectionBar::setTestSelected(bool selected){
 }
 
 void ConnectionBar::setEnterRecordingMode(bool start){
-    if (start){
-        ui->connectButton->setEnabled(false);
-    } else {
-        ui->connectButton->setEnabled(true);
-    }
+    ui->connectButton->setEnabled(!start);
 }
 
 bool ConnectionBar::isPortOpen(){

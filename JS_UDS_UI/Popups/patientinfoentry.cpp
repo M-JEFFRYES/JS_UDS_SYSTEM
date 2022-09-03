@@ -44,7 +44,8 @@ void PatientInfoEntry::retrievePatientInformation(){
     patient_data["surname"] = ui->snameInput->text();
     patient_data["hospital_number"] = ui->hospitalNumberInput->text();
     patient_data["investigation_date"] = investigationDate;
-    patient_data["dob"] = ui->dobInput->date().toString();
+    patient_data["investigation_type"] = "UDS";
+    patient_data["dob"] = ui->dobInput->date().toString("dd/MM/yyyy");
     patient_data["age"] = QString::number(currentAge);
 
 

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "Popups/patientinfoentry.h"
+#include "DAQ/writedata.h"
 
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
@@ -24,6 +25,9 @@ public:
 
 signals:
     void sendConnectionOpen(bool);
+    void sendSetUDSView();
+    void sendSetTestView();
+    void sendEnterRecording(bool);
 
 private slots:
     void serialReceived();
@@ -31,7 +35,9 @@ private slots:
     void receiveExitTestType();
     void receiveOpenNewPatient();
     void receiveOpenExisitngPatient();
-    void receiveClosPatient();
+    void receiveClosePatient();
+    void recieveStartRecordingCSV();
+    void recieveStopRecordingCSV();
 
 private:
     Ui::MainWindow *ui;
@@ -42,12 +48,16 @@ private:
 
     void setSerialConnection();
     void connectToSerialPort();
+    void closeSerialConnection();
     void processIncomingData(QString data_string, int event, bool zero_sensors);
 
     QString generic_window_title;
     std::map<QString, int> pixel_sizes;
     QString test;
     ReadData data_reader;
+    WriteData data_writer;
+    bool write_to_csv;
+    bool csv_created;
     int event_code;
 
     // connection
@@ -63,5 +73,8 @@ private:
     bool readSerialData;
     QByteArray serialData;
     QString serialBuffer;
+
+    // patient
+    bool patient_entered;
 };
 #endif // MAINWINDOW_H

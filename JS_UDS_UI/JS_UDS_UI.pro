@@ -13,6 +13,7 @@ SOURCES += \
     Controls/investigationtypebar.cpp \
     DAQ/connectionbar.cpp \
     DAQ/readdata.cpp \
+    DAQ/writedata.cpp \
     Display/footerdisplay.cpp \
     Display/tracesdisplay.cpp \
     Display/valuedisplaybar.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     Controls/investigationtypebar.h \
     DAQ/connectionbar.h \
     DAQ/readdata.h \
+    DAQ/writedata.h \
     Display/footerdisplay.h \
     Display/tracesdisplay.h \
     Display/valuedisplaybar.h \

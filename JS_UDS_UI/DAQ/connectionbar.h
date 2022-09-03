@@ -20,8 +20,8 @@ public:
     ~ConnectionBar();
 
     void setBarHeights(int minimum, int maximum);
-    void setEnterRecordingMode(bool start);
 
+    void setDisconnected();
     bool isPortOpen();
     QPushButton* getConnectionButton();
     QPushButton* getRefreshButton();
@@ -30,7 +30,7 @@ public:
 
 public slots:
     void receiveTestSelected(bool selected);
-
+    void setEnterRecordingMode(bool start);
 private slots:
     void on_connectButton_clicked();
     void on_refreshButton_clicked();
@@ -39,7 +39,7 @@ private:
     Ui::ConnectionBar *ui;
     void initButtons();
     void setConnected();
-    void setDisconnected();
+
     void setTestSelected(bool selected);
     void getOpenPorts();
 };

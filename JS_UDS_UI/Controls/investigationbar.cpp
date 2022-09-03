@@ -37,14 +37,14 @@ void InvestigationBar::setView(QString test_type){
     QString e3_lab;
 
     if (test_type == "UDS Investigation"){
-        setUDSView();
+        //setUDSView();
 
         e1_lab = "Leak";
         e2_lab = "DO";
         e3_lab = "E";
 
     } else {
-        setTestView();
+        //setTestView();
 
         e1_lab = "ESt";
         e2_lab = "ESp";
@@ -81,8 +81,8 @@ void InvestigationBar::setUDSView(){
     ui->existingPatientButton->setEnabled(true);
 }
 
-void InvestigationBar::setUDSReadyView(){
-    ui->recordButton->setEnabled(true);
+void InvestigationBar::setUDSReadyView(bool set){
+    ui->recordButton->setEnabled(set);
 }
 
 void InvestigationBar::setTestView(){
@@ -136,8 +136,8 @@ void InvestigationBar::recordInvestigationControl()
         ui->event2Button->setEnabled(true);
         ui->event3Button->setEnabled(true);
 
-
         emit sendStartRecording();
+
     } else {
         ui->recordButton->setText("Start");
         ui->newPatientButton->setEnabled(true);

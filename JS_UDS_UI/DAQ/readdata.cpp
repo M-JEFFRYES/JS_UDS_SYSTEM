@@ -20,19 +20,19 @@ void ReadData::setTestingType(QString testing_type){
         setChannelRanges(ranges);
 
     }  else if (testing_type == "Uroflowmetry"){
-        names = {"Time", "UF_RAW"};
+        names = {"Time", "UF"};
         ranges = {{0.0, 500.0}};
         setChannelNames(names);
         setChannelRanges(ranges);
 
     }  else if (testing_type == "Volume Infused"){
-        names = {"Time", "VI_RAW"};
+        names = {"Time", "VI"};
         ranges = {{0.0, 500.0}};
         setChannelNames(names);
         setChannelRanges(ranges);
 
     }  else if (testing_type == "Pump"){
-        names = {"Time", "PWM", "UF_RAW"};
+        names = {"Time", "PWM", "UF"};
         ranges = {{0.0, 255.0}, {0.0, 500.0}};
         setChannelNames(names);
         setChannelRanges(ranges);
@@ -64,7 +64,6 @@ void ReadData::setChannelNames(QVector<QString> names){
 void ReadData::setChannelRanges(QVector<QVector<double>> ranges){
     channel_ranges = ranges;
 }
-
 
 
 void ReadData::readSerialData(QString data_string, int event, bool zero_sensors){

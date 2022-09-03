@@ -16,8 +16,11 @@ public:
     ~InvestigationBar();
     void setView(QString test_type);
     void resetView();
-    void setUDSReadyView();
+    void setUDSReadyView(bool set);
 
+public slots:
+    void setUDSView();
+    void setTestView();
 
 signals:
     void sendOpenNewPatient();
@@ -35,12 +38,12 @@ private slots:
     void logEvent2();
     void logEvent3();
 
+
 private:
     Ui::InvestigationBar *ui;
 
     void initBar();
-    void setUDSView();
-    void setTestView();
+
 };
 
 #endif // INVESTIGATIONBAR_H

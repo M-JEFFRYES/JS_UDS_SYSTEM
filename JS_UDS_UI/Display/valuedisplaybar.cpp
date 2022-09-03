@@ -1,4 +1,5 @@
 #include "valuedisplaybar.h"
+#include "qpen.h"
 #include "ui_valuedisplaybar.h"
 
 #include <QDebug>
@@ -43,6 +44,17 @@ void ValueDisplayBar::initDisplays(){
 
     }
 
+}
+
+void ValueDisplayBar::setVarColours(QVector<QPen> var_colours){
+    this->var_colours = var_colours;
+    for (int i=0; i<display_labels.length(); i++){
+        QPen p = var_colours.at(i);
+        QColor col = p.color();
+        QPalette palette = display_labels.at(i)->palette();
+        palette.setColor(QPalette::WindowText, col);
+
+    }
 }
 
 void ValueDisplayBar::setDisplayChannels(std::map<int, QString> display_names){
