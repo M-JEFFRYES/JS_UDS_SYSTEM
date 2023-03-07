@@ -20,6 +20,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
+
+
 /*-----QWidget-----*/
 QWidget
 {
@@ -91,9 +94,64 @@ QLabel
 	font-size: 13px;
 }
 
+QLabel#timeLabel, QLCDNumber#timeNumber
+{
+    background-color: transparent;
+    color: #FFFFFF;
+    font-size: 20px;
+}
+
+QLabel#displayLabel1, QLCDNumber#displayNumber1
+{
+    background-color: transparent;
+    color: #0000ff;
+    font-size: 20px;
+}
+
+QLabel#displayLabel2, QLCDNumber#displayNumber2
+{
+    background-color: transparent;
+    color: #ff0000;
+    font-size: 20px;
+}
+
+QLabel#displayLabel3, QLCDNumber#displayNumber3
+{
+    background-color: transparent;
+    color: #00ff00;
+    font-size: 20px;
+}
 
 
+QLabel#displayLabel4, QLCDNumber#displayNumber4
+{
+    background-color: transparent;
+    color: #ffa500;
+    font-size: 20px;
+}
 
+
+QLabel#displayLabel5, QLCDNumber#displayNumber5
+{
+    background-color: transparent;
+    color: #ed07e2;
+    font-size: 20px;
+}
+
+
+QLabel#displayLabel6, QLCDNumber#displayNumber6
+{
+    background-color: transparent;
+    color: #ffff00;
+    font-size: 20px;
+}
+
+QLabel#displayLabel7, QLCDNumber#displayNumber7
+{
+    background-color: transparent;
+    color: #964b00;
+    font-size: 20px;
+}
 
 
 

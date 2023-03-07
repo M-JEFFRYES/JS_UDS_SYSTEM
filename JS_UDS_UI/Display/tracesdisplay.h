@@ -22,37 +22,40 @@ public:
     void setBackgroundColour(int red, int green, int blue);
 
     void setSampleWindowLength(int sample_window_length);
-    void setChannelNamesAndRanges(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges);
+    void setChannelNamesAndRanges(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, QVector<QString> event_code_labels, std::map<QString, int> plot_numbers);
 
     void setChannelNames(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, int sample_window_length);
     void addDataset(std::map<QString, double> curr_dataset);
+
+    void createEventLine(int event);
+    void updateEventLines();
+    void loadEventData(QVector<double> events);
 
 
 private:
     Ui::TracesDisplay *ui;
 
+    void setAxesColours();
     double getVarYOffset(int var_number);
     double getVarYScaling(double var_y_span, double var_min, double var_max);
     void setGraphLims();
     void initGraphDatasets();
-    //
-
-    void calculateOffetY();
-    void calculateScalingY(QVector<QVector<double>> var_ranges);
-    void zeroDataset();
-
-    void initGraph();
     void setGraphFrame();
     void setHorizontalAxisLines();
     void setChannelTraces();
+    void setYTicks();
     void loadGraphData();
+    void clearEventLines();
 
     std::map<QString, double> convertRawDataset(std::map<QString, double> dataset);
-
 
     int no_channels;
     int no_samples;
     QVector<QString> y_channel_names;
+    std::map<QString, int> plot_numbers;
+    int no_plots;
+    std::map<int, QString> events_key;
+    QVector<QVector<double>> var_ranges;
     std::map<QString, double> y_offsets;
     std::map<QString, double> y_scales;
     double min_y;
@@ -72,6 +75,12 @@ private:
     int bg_b;
     QVector<QPen> data_line_colours;
     QPen x_axes_pen;
+
+    QVector<double> y_tick_vals;
+    QVector<QString> y_ticks_labs;
+
+    QVector<QCPItemStraightLine*> event_lines;
+    QVector<QCPItemText*> event_labels;
 };
 
 #endif // TRACESDISPLAY_H

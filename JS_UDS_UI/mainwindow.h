@@ -38,6 +38,7 @@ private slots:
     void receiveClosePatient();
     void recieveStartRecordingCSV();
     void recieveStopRecordingCSV();
+    void recieveEventCode(int);
 
 private:
     Ui::MainWindow *ui;
@@ -49,7 +50,7 @@ private:
     void setSerialConnection();
     void connectToSerialPort();
     void closeSerialConnection();
-    void processIncomingData(QString data_string, int event, bool zero_sensors);
+    void processIncomingData(QString data_string, bool zero_sensors);
 
     QString generic_window_title;
     std::map<QString, int> pixel_sizes;

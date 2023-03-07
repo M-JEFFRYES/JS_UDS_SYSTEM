@@ -98,9 +98,7 @@ QString PatientInfoEntry::getWindowTitle(){
     title += patient_data["hospital_number"];
     title += ", ";
     title += patient_data["dob"];
-    title += ", ";
-    title += patient_data["age"];
-    title += " Years Old)";
+    title += ")";
 
     return title;
 }

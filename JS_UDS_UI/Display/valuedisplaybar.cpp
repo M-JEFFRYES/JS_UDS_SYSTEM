@@ -10,6 +10,11 @@ ValueDisplayBar::ValueDisplayBar(QWidget *parent) :
 {
     ui->setupUi(this);
     initDisplays();
+
+    //
+    ui->timeLabel->setVisible(false);
+    ui->timeNumber->setVisible(false);
+
 }
 
 ValueDisplayBar::~ValueDisplayBar()
@@ -46,28 +51,19 @@ void ValueDisplayBar::initDisplays(){
 
 }
 
-void ValueDisplayBar::setVarColours(QVector<QPen> var_colours){
-    this->var_colours = var_colours;
-    for (int i=0; i<display_labels.length(); i++){
-        QPen p = var_colours.at(i);
-        QColor col = p.color();
-        QPalette palette = display_labels.at(i)->palette();
-        palette.setColor(QPalette::WindowText, col);
 
-    }
-}
 
 void ValueDisplayBar::setDisplayChannels(std::map<int, QString> display_names){
 
     this->display_names = display_names;
     no_display_names = this->display_names.size();
 
-    for (int i=0; i<no_display_names; i++){
-        display_labels[i]->setVisible(true);
-        display_numbers[i]->setVisible(true);
-        display_labels[i]->setText(display_names[i]);
-        variable_mapping[display_names[i]] = i;
-        display_numbers[i]->display(0.0);
+    for (int i=1; i<no_display_names; i++){
+        display_labels[i-1]->setVisible(true);
+        display_numbers[i-1]->setVisible(true);
+        display_labels[i-1]->setText(display_names[i]);
+        variable_mapping[display_names[i-1]] = i-1;
+        display_numbers[i-1]->display(0.0);
     }
 }
 
@@ -80,10 +76,20 @@ void ValueDisplayBar::updateNumbers(std::map<QString, double> data){
     int pos;
     double val;
 
-    for (int i=0; i<no_display_names; i++){
+    for (int i=1; i<no_display_names; i++){
         name = display_names[i];
         pos = variable_mapping[name];
         val = data[name];
         display_numbers[pos]->display(val);
     }
+    ui->timeNumber->display(data[display_names[0]]);
+
+
+    display_numbers[0]->display(30.97);
+    display_numbers[1]->display(29.99);
+    display_numbers[2]->display(0.98);
+    display_numbers[3]->display(477);
+    display_numbers[4]->display(465);
+    display_numbers[5]->display(0);
+
 }

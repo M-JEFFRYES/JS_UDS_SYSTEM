@@ -14,7 +14,7 @@ class InvestigationBar : public QFrame
 public:
     explicit InvestigationBar(QWidget *parent = nullptr);
     ~InvestigationBar();
-    void setView(QString test_type);
+    void setView(QVector<QString> event_codes);
     void resetView();
     void setUDSReadyView(bool set);
 
@@ -26,7 +26,7 @@ signals:
     void sendOpenNewPatient();
     void sendOpenExistingPatient();
     void sendClosePatient();
-    void sendEvent(QString);
+    void sendEvent(int);
     void sendStartRecording();
     void sendStopRecording();
 

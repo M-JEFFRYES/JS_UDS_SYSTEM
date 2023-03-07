@@ -17,7 +17,6 @@ public:
     explicit ValueDisplayBar(QWidget *parent = nullptr);
     ~ValueDisplayBar();
 
-    void setVarColours(QVector<QPen> var_colours);
     void setDisplayChannels(std::map<int, QString> display_names);
     void displayReset();
     void updateNumbers(std::map<QString, double> data);

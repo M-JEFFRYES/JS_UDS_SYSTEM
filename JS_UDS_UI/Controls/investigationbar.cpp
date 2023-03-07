@@ -30,31 +30,11 @@ void InvestigationBar::initBar(){
 }
 
 
-void InvestigationBar::setView(QString test_type){
+void InvestigationBar::setView(QVector<QString> event_codes){
 
-    QString e1_lab;
-    QString e2_lab;
-    QString e3_lab;
-
-    if (test_type == "UDS Investigation"){
-        //setUDSView();
-
-        e1_lab = "Leak";
-        e2_lab = "DO";
-        e3_lab = "E";
-
-    } else {
-        //setTestView();
-
-        e1_lab = "ESt";
-        e2_lab = "ESp";
-        e3_lab = "E";
-    }
-
-    ui->event1Button->setText(e1_lab);
-    ui->event2Button->setText(e2_lab);
-    ui->event3Button->setText(e3_lab);
-
+    ui->event1Button->setText(event_codes.at(0));
+    ui->event2Button->setText(event_codes.at(1));
+    ui->event3Button->setText(event_codes.at(2));
 
 }
 
@@ -152,24 +132,8 @@ void InvestigationBar::recordInvestigationControl()
 }
 
 
-void InvestigationBar::logEvent1()
-{
-    QString event = ui->event1Button->text();
-    emit sendEvent(event);
-}
-
-
-void InvestigationBar::logEvent2()
-{
-    QString event = ui->event2Button->text();
-    emit sendEvent(event);
-}
-
-
-void InvestigationBar::logEvent3()
-{
-    QString event = ui->event3Button->text();
-    emit sendEvent(event);
-}
+void InvestigationBar::logEvent1(){emit sendEvent(1);}
+void InvestigationBar::logEvent2(){emit sendEvent(2);}
+void InvestigationBar::logEvent3(){emit sendEvent(3);}
 
 
