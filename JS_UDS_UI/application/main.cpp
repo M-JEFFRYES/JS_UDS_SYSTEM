@@ -37,8 +37,8 @@ void initMessageHandling(){
 }
 
 
-
-int main(int argc, char *argv[])
+extern "C"{
+int maincode_main(int argc, char *argv[])
 {
     initMessageHandling();
 
@@ -56,3 +56,6 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+}
+
+
