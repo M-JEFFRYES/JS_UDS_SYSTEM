@@ -60,7 +60,8 @@ void ConnectionBar::getOpenPorts(){
     ui->portNamesBox->clear();
     for(QSerialPortInfo port : QSerialPortInfo::availablePorts())
             ui->portNamesBox->addItem(port.portName(),port.description());
-    ui->portNamesBox->setCurrentIndex(2); // Default value to most likely
+    int ind = QSerialPortInfo::availablePorts().length() - 1;
+    ui->portNamesBox->setCurrentIndex(ind); // Default value to most likely
 }
 
 

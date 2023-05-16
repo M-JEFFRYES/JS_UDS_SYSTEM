@@ -82,5 +82,8 @@ private:
 
     // patient
     bool patient_entered;
+
+    // data processing
+    QVector<QString> variable_names;
 };
 #endif // MAINWINDOW_H
