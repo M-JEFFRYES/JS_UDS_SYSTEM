@@ -51,7 +51,6 @@ void ValueDisplayBar::initDisplays(){
 
 }
 
-
 void ValueDisplayBar::setDisplayChannels(QVector<QString> display_names){
     // set number of channels
     no_display_names = display_names.length();
@@ -68,7 +67,6 @@ void ValueDisplayBar::setDisplayChannels(QVector<QString> display_names){
         display_numbers[i-1]->display(0.0);
     }
 }
-
 
 void ValueDisplayBar::displayReset(){
     initDisplays();

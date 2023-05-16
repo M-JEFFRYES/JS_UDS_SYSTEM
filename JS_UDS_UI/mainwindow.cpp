@@ -263,19 +263,15 @@ void MainWindow::processIncomingData(QString data_string, bool zero_sensors){
 
 void MainWindow::writeToSerialPort(int value){
     QByteArray q_b;
-    q_b.setNum(value);
-    q_b.append('\n');
-    qInfo() << q_b;
-    //QString val = QString::number(value);
     if(conn->isOpen()){
-        //conn->write(val.toStdString().c_str());
+        q_b.setNum(value);
+        q_b.append('\n');
         conn->write(q_b);
         conn->waitForBytesWritten(-1);
     } else {
         QMessageBox::critical(this, tr("Write Error"), conn->errorString());
     }
 }
-
 
 // 3 patient controls
 
@@ -340,5 +336,6 @@ void MainWindow::recieveEventCode(int code){
 void MainWindow::recieveZeroPressure(){data_reader.setZeroPressure();}
 
 void MainWindow::recievePumpValue(int value){
+    qInfo() << "sdacfwd: " << QString::number(value);
     writeToSerialPort(value);
 }

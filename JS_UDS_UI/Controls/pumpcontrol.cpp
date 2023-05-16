@@ -28,6 +28,7 @@ void PumpControl::resetPump(){
 
 void PumpControl::convertToFlowrate(){
     pump_rate_arduino_input = (int) (((float) pump_rate_percentage / 100.0) * 255.0);
+    ui->powerLCD->display(pump_rate_percentage);
 }
 
 void PumpControl::addOneToPump(){
