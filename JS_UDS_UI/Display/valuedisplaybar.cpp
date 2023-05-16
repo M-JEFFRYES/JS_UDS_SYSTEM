@@ -52,6 +52,23 @@ void ValueDisplayBar::initDisplays(){
 }
 
 
+void ValueDisplayBar::setDisplayChannels(QVector<QString> display_names){
+    // set number of channels
+    no_display_names = display_names.length();
+
+    // link measured variables to the display
+    for (int i=1; i<no_display_names; i++){
+        // set mapping
+        variable_mapping[display_names[i]] = i-1;
+
+        // manage components
+        display_labels[i-1]->setVisible(true);
+        display_labels[i-1]->setText(display_names[i]);
+        display_numbers[i-1]->setVisible(true);
+        display_numbers[i-1]->display(0.0);
+    }
+}
+
 
 void ValueDisplayBar::setDisplayChannels(std::map<int, QString> display_names){
 
@@ -72,16 +89,19 @@ void ValueDisplayBar::displayReset(){
 }
 
 void ValueDisplayBar::updateNumbers(std::map<QString, double> data){
-    QString name;
-    int pos;
-    double val;
 
-    for (int i=1; i<no_display_names; i++){
-        name = display_names[i];
-        pos = variable_mapping[name];
-        val = data[name];
-        display_numbers[pos]->display(val);
+    auto itr=data.begin();
+
+    int display_ind;
+
+    // Iterate using iterator in while loop
+    while (itr!=data.end()){
+        if (itr->first != "Time"){
+            display_ind = variable_mapping[itr->first];
+            display_numbers[display_ind]->display(itr->second);
+        } else {
+            ui->timeNumber->display(itr->second);
+        }
+        itr++;
     }
-    ui->timeNumber->display(data[display_names[0]]);
-
 }

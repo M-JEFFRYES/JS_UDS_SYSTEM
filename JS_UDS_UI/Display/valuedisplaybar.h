@@ -18,6 +18,8 @@ public:
     ~ValueDisplayBar();
 
     void setDisplayChannels(std::map<int, QString> display_names);
+    void setDisplayChannels(QVector<QString> display_names);
+
     void displayReset();
     void updateNumbers(std::map<QString, double> data);
 
@@ -32,6 +34,7 @@ private:
     QVector<QLCDNumber*> display_numbers;
     std::map<QString, double> current_dataset;
     std::map<QString, int> variable_mapping;
+
 
     QVector<QPen> var_colours;
 
