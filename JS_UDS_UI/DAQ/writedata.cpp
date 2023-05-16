@@ -15,16 +15,23 @@ WriteData::WriteData()
 
 void WriteData::setFileDirectory(QString dir_path){directory_path = dir_path;}
 
-void WriteData::setVariableTitles(std::map<int, QString> variable_names){
-    this->variable_names = variable_names;
+void WriteData::setVariableTitles(QVector<QString> variable_names){
 
-    int no_channels = variable_names.size();
-    csv_headers_line = variable_names[0];
-    for (int i=1; i< no_channels; i++){
-        csv_headers_line += ",";
+    // set number of channels
+    int no_display_names = variable_names.length();
+
+    // link measured variables to the display
+    csv_headers_line = "";
+    for (int i=0; i<no_display_names; i++){
+        // set mapping
+        variable_mapping[variable_names[i]] = i;
+        variable_mapping_inv[i] = variable_names[i];
+
+
         csv_headers_line += variable_names[i];
+        csv_headers_line += ",";
     }
-    csv_headers_line += "\n";
+    csv_headers_line += "EVENT\n";
 }
 
 void WriteData::loadMetaData(std::map<QString, QString> meta_data){
@@ -74,7 +81,6 @@ void WriteData::createMetaDataLines(){
     }
 }
 
-
 // recording functions
 void WriteData::createCSVFile(){
     createFileName();
@@ -94,16 +100,15 @@ void WriteData::createCSVFile(){
 
 bool WriteData::checkCSVCreated(){return csv_created;}
 
-void WriteData::setEndCSVRecording(){
-    csv_created = false;
-}
+void WriteData::setEndCSVRecording(){csv_created = false;}
 
 QString WriteData::getDataLine(std::map<QString, double> data){
-    QString line = QString::number(data[variable_names[0]]);
-    int len = variable_names.size();
-    for (int i=1; i<len; i++){
+
+    QString line = "";
+
+    for (int i=0; i<variable_mapping_inv.size(); i++){
+        line += QString::number(data[variable_mapping_inv[i]]);
         line += ",";
-        line += QString::number(data[variable_names[i]]);
     }
     line += "\n";
     return line;

@@ -13,6 +13,7 @@ public:
 
     std::map<int, QString> getChannelNames();
     QVector<QVector<double>> getChannelRanges();
+    QVector<QString> getChannelVarNames();
 
     std::map<QString, double> readCurrentDataset(QString data_string, int event, bool zero_channels);
     std::map<QString, double> getChannelZeros();
@@ -28,6 +29,7 @@ private:
 
     QString test_type;
     int number_data_channels;
+    QVector<QString> channel_var_names;
     std::map<int, QString> channel_names;
     QVector<QVector<double>> channel_ranges;
     std::map<QString, double> current_dataset;

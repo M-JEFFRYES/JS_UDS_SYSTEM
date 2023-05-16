@@ -7,6 +7,31 @@ ReadData::ReadData()
 
 }
 
+// GETTERS
+std::map<int, QString> ReadData::getChannelNames(){
+    return channel_names;
+}
+
+QVector<QString> ReadData::getChannelVarNames(){
+    return channel_var_names;
+}
+
+QVector<QVector<double>> ReadData::getChannelRanges(){
+    return channel_ranges;
+}
+
+std::map<QString, double> ReadData::getChannelZeros(){
+    return channel_zeros;
+}
+
+std::map<QString, int> ReadData::getChannelPlotNumbers(){
+    return channel_plot_numbers;
+}
+
+QVector<QString> ReadData::getEventCodes(){return event_codes;}
+
+QVector<QString> ReadData::getEventLabels(){return event_labels;}
+
 // FUNCTIONALITY
 void ReadData::setTestingType(QString testing_type){
     qInfo() << "Setting type" << testing_type;
@@ -60,6 +85,8 @@ void ReadData::setTestingType(QString testing_type){
 }
 
 void ReadData::setChannelNamesRangesEvents(QVector<QString> names, QVector<QVector<double>> ranges, QVector<QString> event_codes, QVector<QString> event_labels, QVector<int> channel_plot_numbers){
+    channel_var_names = names;
+
     channel_names.clear();
     this->event_codes.clear();
     number_data_channels = names.length();
@@ -78,12 +105,15 @@ void ReadData::setChannelNamesRangesEvents(QVector<QString> names, QVector<QVect
 }
 
 void ReadData::readSerialData(QString data_string, int event, bool zero_sensors){
-    QStringList values = data_string.split(",");
+
+    QStringList valuePairs = data_string.split(";");
+    QStringList keyPair;
     double value;
     QString variable;
-    for (int i=0; i<number_data_channels; i++){
-        variable = channel_names[i];
-        value = values.value(i).toDouble();
+    for (int i=0; i<valuePairs.length(); i++){
+        keyPair = valuePairs[i].split(",");
+        variable = keyPair[0];
+        value = keyPair[1].toDouble();
         if (zero_sensors){
             channel_zeros[variable] = value;
         }
@@ -92,26 +122,6 @@ void ReadData::readSerialData(QString data_string, int event, bool zero_sensors)
     }
     current_dataset["EVENT"] = event;
 }
-
-std::map<int, QString> ReadData::getChannelNames(){
-    return channel_names;
-}
-
-QVector<QVector<double>> ReadData::getChannelRanges(){
-    return channel_ranges;
-}
-
-std::map<QString, double> ReadData::getChannelZeros(){
-    return channel_zeros;
-}
-
-std::map<QString, int> ReadData::getChannelPlotNumbers(){
-    return channel_plot_numbers;
-}
-
-QVector<QString> ReadData::getEventCodes(){return event_codes;}
-
-QVector<QString> ReadData::getEventLabels(){return event_labels;}
 
 void ReadData::setZeroPressure(){
     if (test_type == "UDS Investigation"){
