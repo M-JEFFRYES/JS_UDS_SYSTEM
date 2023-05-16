@@ -18,10 +18,10 @@ void InvestigationBar::initBar(){
     connect(ui->newPatientButton, &QPushButton::clicked, this, &InvestigationBar::openNewPatient);
     connect(ui->existingPatientButton, &QPushButton::clicked, this, &InvestigationBar::openExistingPatient);
     connect(ui->recordButton, &QPushButton::clicked, this, &InvestigationBar::recordInvestigationControl);
+    connect(ui->zeroPressureButton, &QPushButton::clicked, this, &InvestigationBar::setZeroPressure);
     connect(ui->event1Button, &QPushButton::clicked, this, &InvestigationBar::logEvent1);
     connect(ui->event2Button, &QPushButton::clicked, this, &InvestigationBar::logEvent2);
     connect(ui->event3Button, &QPushButton::clicked, this, &InvestigationBar::logEvent3);
-
 
     ui->newPatientButton->setCheckable(true);
     ui->existingPatientButton->setCheckable(true);
@@ -42,13 +42,14 @@ void InvestigationBar::resetView(){
     ui->newPatientButton->setVisible(true);
     ui->existingPatientButton->setVisible(true);
 
+    ui->zeroPressureButton->setVisible(true);
+
     ui->newPatientButton->setEnabled(false);
     ui->existingPatientButton->setEnabled(false);
     ui->recordButton->setEnabled(false);
     ui->event1Button->setEnabled(false);
     ui->event2Button->setEnabled(false);
     ui->event3Button->setEnabled(false);
-
     ui->event1Button->setText("Event 1");
     ui->event2Button->setText("Event 2");
     ui->event3Button->setText("Event 3");
@@ -111,6 +112,7 @@ void InvestigationBar::recordInvestigationControl()
         ui->recordButton->setText("Stop");
         ui->newPatientButton->setEnabled(false);
         ui->existingPatientButton->setEnabled(false);
+        ui->zeroPressureButton->setVisible(false);
 
         ui->event1Button->setEnabled(true);
         ui->event2Button->setEnabled(true);
@@ -122,6 +124,7 @@ void InvestigationBar::recordInvestigationControl()
         ui->recordButton->setText("Start");
         ui->newPatientButton->setEnabled(true);
         ui->existingPatientButton->setEnabled(true);
+        ui->zeroPressureButton->setVisible(true);
 
         ui->event1Button->setEnabled(false);
         ui->event2Button->setEnabled(false);
@@ -131,7 +134,7 @@ void InvestigationBar::recordInvestigationControl()
     }
 }
 
-
+void InvestigationBar::setZeroPressure(){emit sendZeroPressure();}
 void InvestigationBar::logEvent1(){emit sendEvent(1);}
 void InvestigationBar::logEvent2(){emit sendEvent(2);}
 void InvestigationBar::logEvent3(){emit sendEvent(3);}

@@ -52,20 +52,43 @@
      </layout>
     </item>
     <item>
-     <widget class="InvestigationBar" name="investigationBarC">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,1">
+      <property name="topMargin">
+       <number>10</number>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
+      <item>
+       <widget class="InvestigationBar" name="investigationBarC">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="PumpControl" name="pump">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,5">
@@ -142,6 +165,12 @@
    <class>InvestigationBar</class>
    <extends>QFrame</extends>
    <header>Controls/investigationbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PumpControl</class>
+   <extends>QFrame</extends>
+   <header>Controls/pumpcontrol.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

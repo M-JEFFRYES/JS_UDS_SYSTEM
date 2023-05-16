@@ -39,6 +39,8 @@ private slots:
     void recieveStartRecordingCSV();
     void recieveStopRecordingCSV();
     void recieveEventCode(int);
+    void recieveZeroPressure();
+    void recievePumpValue(int);
 
 private:
     Ui::MainWindow *ui;
@@ -52,6 +54,8 @@ private:
     void closeSerialConnection();
     void processIncomingData(QString data_string, bool zero_sensors);
 
+    void writeToSerialPort(int value);
+
     QString generic_window_title;
     std::map<QString, int> pixel_sizes;
     QString test;
@@ -60,6 +64,7 @@ private:
     bool write_to_csv;
     bool csv_created;
     int event_code;
+    bool to_zero_sensors;
 
     // connection
     QSerialPort *conn;

@@ -10,14 +10,14 @@ ReadData::ReadData()
 // FUNCTIONALITY
 void ReadData::setTestingType(QString testing_type){
     qInfo() << "Setting type" << testing_type;
-
+    test_type = testing_type;
     QVector<QString> names;
     QVector<QVector<double>> ranges;
     QVector<int> plot_no;
     QVector<QString> event_codes;
     QVector<QString> event_labels;
 
-    if (testing_type == "Pressure"){
+    if (test_type == "Pressure"){
         names = {"Time", "PSENS"};
         plot_no = {0};
         ranges = {{0.0, 100.0}};
@@ -25,7 +25,7 @@ void ReadData::setTestingType(QString testing_type){
         event_labels = {"H1", "H2", "H3"};
         setChannelNamesRangesEvents(names, ranges, event_codes, event_labels, plot_no);
 
-    }  else if (testing_type == "Uroflowmetry"){
+    }  else if (test_type == "Uroflowmetry"){
         names = {"Time", "UF"};
         plot_no = {0};
         ranges = {{0.0, 500.0}};
@@ -33,7 +33,7 @@ void ReadData::setTestingType(QString testing_type){
         event_labels = {"H1", "H2", "H3"};
         setChannelNamesRangesEvents(names, ranges, event_codes, event_labels, plot_no);
 
-    }  else if (testing_type == "Volume Infused"){
+    }  else if (test_type == "Volume Infused"){
         names = {"Time", "VI"};
         plot_no = {0};
         ranges = {{0.0, 500.0}};
@@ -41,7 +41,7 @@ void ReadData::setTestingType(QString testing_type){
         event_labels = {"H1", "H2", "H3"};
         setChannelNamesRangesEvents(names, ranges, event_codes, event_labels, plot_no);
 
-    }  else if (testing_type == "Pump"){
+    }  else if (test_type == "Pump"){
         names = {"Time", "PWM", "UF"};
         plot_no = {0, 1};
         ranges = {{0.0, 255.0}, {0.0, 500.0}};
@@ -49,7 +49,7 @@ void ReadData::setTestingType(QString testing_type){
         event_labels = {"H1", "H2", "H3"};
         setChannelNamesRangesEvents(names, ranges, event_codes, event_labels, plot_no);
 
-    }  else if (testing_type == "UDS Investigation"){
+    }  else if (test_type == "UDS Investigation"){
         names = {"Time", "PBLAD", "PABD", "PDET","VI", "VV", "Q"};
         plot_no = {0, 1, 2, 3, 3, 4};
         ranges = {{0.0, 100.0}, {0.0, 100.0}, {0.0, 100.0}, {0.0, 500.0}, {0.0, 500.0}, {0.0, 50.0}};
@@ -113,7 +113,15 @@ QVector<QString> ReadData::getEventCodes(){return event_codes;}
 
 QVector<QString> ReadData::getEventLabels(){return event_labels;}
 
+void ReadData::setZeroPressure(){
+    if (test_type == "UDS Investigation"){
+        channel_zeros["PBLAD"] = current_dataset["PBLAD"];
+        channel_zeros["PABD"] = current_dataset["PABD"];
 
+    } else if (test_type == "Pressure") {
+        channel_zeros["PSENS"] = current_dataset["PSENS"];
+    }
+}
 
 // SLOTS
 

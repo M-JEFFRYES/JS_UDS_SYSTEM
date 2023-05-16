@@ -84,12 +84,4 @@ void ValueDisplayBar::updateNumbers(std::map<QString, double> data){
     }
     ui->timeNumber->display(data[display_names[0]]);
 
-
-    display_numbers[0]->display(30.97);
-    display_numbers[1]->display(29.99);
-    display_numbers[2]->display(0.98);
-    display_numbers[3]->display(477);
-    display_numbers[4]->display(465);
-    display_numbers[5]->display(0);
-
 }

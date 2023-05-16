@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     Controls/investigationbar.cpp \
     Controls/investigationtypebar.cpp \
+    Controls/pumpcontrol.cpp \
     DAQ/connectionbar.cpp \
     DAQ/readdata.cpp \
     DAQ/writedata.cpp \
@@ -25,7 +26,9 @@ SOURCES += \
 HEADERS += \
     Controls/investigationbar.h \
     Controls/investigationtypebar.h \
+    Controls/pumpcontrol.h \
     DAQ/connectionbar.h \
+    DAQ/mainwindow.h \
     DAQ/readdata.h \
     DAQ/writedata.h \
     Display/footerdisplay.h \
@@ -38,6 +41,7 @@ HEADERS += \
 FORMS += \
     Controls/investigationbar.ui \
     Controls/investigationtypebar.ui \
+    Controls/pumpcontrol.ui \
     DAQ/connectionbar.ui \
     Display/footerdisplay.ui \
     Display/tracesdisplay.ui \

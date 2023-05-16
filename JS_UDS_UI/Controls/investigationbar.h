@@ -29,11 +29,13 @@ signals:
     void sendEvent(int);
     void sendStartRecording();
     void sendStopRecording();
+    void sendZeroPressure();
 
 private slots:
     void openNewPatient();
     void openExistingPatient();
     void recordInvestigationControl();
+    void setZeroPressure();
     void logEvent1();
     void logEvent2();
     void logEvent3();

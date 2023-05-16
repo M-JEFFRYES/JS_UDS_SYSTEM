@@ -60,6 +60,19 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="zeroPressureButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Zero Pressure</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="event1Button">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
