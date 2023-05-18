@@ -73,7 +73,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="event1Button">
+    <widget class="QPushButton" name="sensationsButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -81,33 +81,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Event 1</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="event2Button">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Event 2</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="event3Button">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Event 3</string>
+      <string>First Desire</string>
      </property>
     </widget>
    </item>

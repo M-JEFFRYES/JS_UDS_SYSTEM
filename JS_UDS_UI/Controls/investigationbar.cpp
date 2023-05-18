@@ -1,6 +1,8 @@
 #include "investigationbar.h"
 #include "ui_investigationbar.h"
 
+#include "AppConstants.h"
+
 InvestigationBar::InvestigationBar(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::InvestigationBar)
@@ -15,51 +17,67 @@ InvestigationBar::~InvestigationBar()
 }
 
 void InvestigationBar::initBar(){
+
+    ui->newPatientButton->setMaximumWidth(DimensionConstants::MAX_CONTROL_BUTTON_WIDTH);
+    ui->existingPatientButton->setMaximumWidth(DimensionConstants::MAX_CONTROL_BUTTON_WIDTH);
+    ui->recordButton->setMaximumWidth(DimensionConstants::MAX_CONTROL_BUTTON_WIDTH);
+    ui->zeroPressureButton->setMaximumWidth(DimensionConstants::MAX_CONTROL_BUTTON_WIDTH);
+    ui->sensationsButton->setMaximumWidth(DimensionConstants::MAX_CONTROL_BUTTON_WIDTH);
+
+    // connections
     connect(ui->newPatientButton, &QPushButton::clicked, this, &InvestigationBar::openNewPatient);
     connect(ui->existingPatientButton, &QPushButton::clicked, this, &InvestigationBar::openExistingPatient);
     connect(ui->recordButton, &QPushButton::clicked, this, &InvestigationBar::recordInvestigationControl);
     connect(ui->zeroPressureButton, &QPushButton::clicked, this, &InvestigationBar::setZeroPressure);
-    connect(ui->event1Button, &QPushButton::clicked, this, &InvestigationBar::logEvent1);
-    connect(ui->event2Button, &QPushButton::clicked, this, &InvestigationBar::logEvent2);
-    connect(ui->event3Button, &QPushButton::clicked, this, &InvestigationBar::logEvent3);
+    connect(ui->sensationsButton, &QPushButton::clicked, this, &InvestigationBar::logSensation);
 
+    // appearance
     ui->newPatientButton->setCheckable(true);
     ui->existingPatientButton->setCheckable(true);
     ui->recordButton->setCheckable(true);
     resetView();
 }
 
-
-void InvestigationBar::setView(QVector<QString> event_codes){
-
-    ui->event1Button->setText(event_codes.at(0));
-    ui->event2Button->setText(event_codes.at(1));
-    ui->event3Button->setText(event_codes.at(2));
-
-}
-
 void InvestigationBar::resetView(){
+
     ui->newPatientButton->setVisible(true);
+    ui->newPatientButton->setEnabled(false);
+
     ui->existingPatientButton->setVisible(true);
+    ui->existingPatientButton->setEnabled(false);
+
+    ui->recordButton->setEnabled(false);
 
     ui->zeroPressureButton->setVisible(true);
 
-    ui->newPatientButton->setEnabled(false);
-    ui->existingPatientButton->setEnabled(false);
-    ui->recordButton->setEnabled(false);
-    ui->event1Button->setEnabled(false);
-    ui->event2Button->setEnabled(false);
-    ui->event3Button->setEnabled(false);
-    ui->event1Button->setText("Event 1");
-    ui->event2Button->setText("Event 2");
-    ui->event3Button->setText("Event 3");
+    ui->sensationsButton->setVisible(false);
+    ui->sensationsButton->setText(EventConstants::FIRST_DESIRE_DESC);
+    sensation_current_event_code = EventConstants::FIRST_DESIRE;
+}
 
+void InvestigationBar::setInvestigationView(int test_code){
+    switch (test_code){
+        case TestTypeConstants::UDS_INVESTIGATION:
+            ui->newPatientButton->setEnabled(true);
+            ui->existingPatientButton->setEnabled(true);
+            ui->sensationsButton->setVisible(true);
+            break;
+        case TestTypeConstants::PRESSURE_TEST:
+        case TestTypeConstants::VOLUME_VOID_TEST:
+        case TestTypeConstants::VOLUME_INFUSED_TEST:
+        case TestTypeConstants::INFUSION_RATE_TEST:
+            ui->newPatientButton->setVisible(false);
+            ui->existingPatientButton->setVisible(false);
+            ui->recordButton->setEnabled(true);
+            break;
+    }
 }
 
 
 void InvestigationBar::setUDSView(){
     ui->newPatientButton->setEnabled(true);
     ui->existingPatientButton->setEnabled(true);
+    ui->sensationsButton->setVisible(true);
 }
 
 void InvestigationBar::setUDSReadyView(bool set){
@@ -71,7 +89,6 @@ void InvestigationBar::setTestView(){
     ui->existingPatientButton->setVisible(false);
     ui->recordButton->setEnabled(true);
 }
-
 
 void InvestigationBar::openNewPatient()
 {
@@ -89,7 +106,6 @@ void InvestigationBar::openNewPatient()
 
 }
 
-
 void InvestigationBar::openExistingPatient()
 {
     bool open = ui->existingPatientButton->isChecked();
@@ -105,7 +121,6 @@ void InvestigationBar::openExistingPatient()
    ;
 }
 
-
 void InvestigationBar::recordInvestigationControl()
 {
     if (ui->recordButton->isChecked()){
@@ -114,9 +129,7 @@ void InvestigationBar::recordInvestigationControl()
         ui->existingPatientButton->setEnabled(false);
         ui->zeroPressureButton->setVisible(false);
 
-        ui->event1Button->setEnabled(true);
-        ui->event2Button->setEnabled(true);
-        ui->event3Button->setEnabled(true);
+        ui->sensationsButton->setEnabled(true);
 
         emit sendStartRecording();
 
@@ -125,18 +138,38 @@ void InvestigationBar::recordInvestigationControl()
         ui->newPatientButton->setEnabled(true);
         ui->existingPatientButton->setEnabled(true);
         ui->zeroPressureButton->setVisible(true);
-
-        ui->event1Button->setEnabled(false);
-        ui->event2Button->setEnabled(false);
-        ui->event3Button->setEnabled(false);
-
         emit sendStopRecording();
     }
 }
 
 void InvestigationBar::setZeroPressure(){emit sendZeroPressure();}
-void InvestigationBar::logEvent1(){emit sendEvent(1);}
-void InvestigationBar::logEvent2(){emit sendEvent(2);}
-void InvestigationBar::logEvent3(){emit sendEvent(3);}
+
+void InvestigationBar::logSensation(){
+
+    switch (sensation_current_event_code) {
+        case EventConstants::FIRST_DESIRE:
+            emit sendEvent(EventConstants::FIRST_DESIRE);
+            ui->sensationsButton->setText(EventConstants::NORMAL_DESIRE_DESC);
+            sensation_current_event_code = EventConstants::NORMAL_DESIRE;
+            break;
+        case EventConstants::NORMAL_DESIRE:
+            emit sendEvent(EventConstants::NORMAL_DESIRE);
+            ui->sensationsButton->setText(EventConstants::STRONG_DESIRE_DESC);
+            sensation_current_event_code = EventConstants::STRONG_DESIRE;
+            break;
+        case EventConstants::STRONG_DESIRE:
+            emit sendEvent(EventConstants::STRONG_DESIRE);
+            ui->sensationsButton->setText(EventConstants::URGENCY_DESC);
+            sensation_current_event_code = EventConstants::URGENCY;
+            break;
+        case EventConstants::URGENCY:
+            emit sendEvent(EventConstants::URGENCY);
+            break;
+    }
+
+
+}
+
+
 
 

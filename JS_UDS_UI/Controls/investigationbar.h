@@ -14,11 +14,11 @@ class InvestigationBar : public QFrame
 public:
     explicit InvestigationBar(QWidget *parent = nullptr);
     ~InvestigationBar();
-    void setView(QVector<QString> event_codes);
     void resetView();
     void setUDSReadyView(bool set);
 
 public slots:
+    void setInvestigationView(int);
     void setUDSView();
     void setTestView();
 
@@ -36,15 +36,15 @@ private slots:
     void openExistingPatient();
     void recordInvestigationControl();
     void setZeroPressure();
-    void logEvent1();
-    void logEvent2();
-    void logEvent3();
+    void logSensation();
 
 
 private:
     Ui::InvestigationBar *ui;
 
     void initBar();
+
+    int sensation_current_event_code;
 
 };
 
