@@ -28,6 +28,7 @@ signals:
     void sendSetUDSView();
     void sendSetTestView();
     void sendEnterRecording(bool);
+    void sendEnablePumpButtons(bool);
 
 private slots:
     void serialReceived();
@@ -38,6 +39,7 @@ private slots:
     void receiveClosePatient();
     void recieveStartRecordingCSV();
     void recieveStopRecordingCSV();
+    //void recieveEventCode(int);
     void recieveEventCode(int);
     void recieveZeroPressure();
     void recievePumpValue(int);
@@ -63,7 +65,7 @@ private:
     WriteData data_writer;
     bool write_to_csv;
     bool csv_created;
-    int event_code;
+    QString event_code;
     bool to_zero_sensors;
 
     // connection

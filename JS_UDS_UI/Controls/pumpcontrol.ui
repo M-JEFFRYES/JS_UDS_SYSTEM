@@ -25,7 +25,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>-1</string>
+        <string>↓</string>
        </property>
       </widget>
      </item>
@@ -38,23 +38,9 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>-10</string>
+        <string>↓↓↓</string>
        </property>
       </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="powerVbox">
-     <item>
-      <widget class="QLabel" name="powerLabel">
-       <property name="text">
-        <string>Power</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLCDNumber" name="powerLCD"/>
      </item>
     </layout>
    </item>
@@ -63,7 +49,7 @@
      <item>
       <widget class="QLabel" name="flowrateLabel">
        <property name="text">
-        <string>Flowrate</string>
+        <string>Infusion Rate</string>
        </property>
       </widget>
      </item>
@@ -75,19 +61,6 @@
    <item>
     <layout class="QVBoxLayout" name="addVbox">
      <item>
-      <widget class="QPushButton" name="addOneButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>+1</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="addTenButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
@@ -96,7 +69,20 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>+10</string>
+        <string>↑↑↑</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="addOneButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>↑</string>
        </property>
       </widget>
      </item>

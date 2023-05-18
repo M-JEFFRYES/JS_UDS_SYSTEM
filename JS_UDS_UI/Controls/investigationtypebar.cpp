@@ -1,6 +1,8 @@
 #include "investigationtypebar.h"
 #include "ui_investigationtypebar.h"
 
+#include "AppConstants.h"
+
 InvestigationTypeBar::InvestigationTypeBar(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::InvestigationTypeBar)
@@ -17,17 +19,18 @@ InvestigationTypeBar::~InvestigationTypeBar()
 
 // FUNCTIONALITY
 void InvestigationTypeBar::setTestOptions(){
-    ui->testsBox->addItem("Clinical - UDS Investigation");
-    ui->testsBox->addItem("Test - Pressure");
-    ui->testsBox->addItem("Test - Uroflowmetry");
-    ui->testsBox->addItem("Test - Volume Infused");
-    ui->testsBox->addItem("Test - Pump");
+
+    ui->testsBox->addItem(TestTypeConstants::UDS_INVESTIGATION_DESC);
+    ui->testsBox->addItem(TestTypeConstants::PRESSURE_TEST_DESC);
+    ui->testsBox->addItem(TestTypeConstants::VOLUME_VOID_TEST_DESC);
+    ui->testsBox->addItem(TestTypeConstants::VOLUME_INFUSED_TEST_DESC);
+    ui->testsBox->addItem(TestTypeConstants::INFUSION_RATE_TEST_DESC);
 }
 
 void InvestigationTypeBar::setTestSelected(){
-    current_test_type = ui->testsBox->currentText().split(" - ")[1];
     ui->selectTestButton->setText("Exit Test");
     ui->testsBox->setEnabled(false);
+    current_test_type = ui->testsBox->currentText();
     emit sendTestName(current_test_type);
 }
 

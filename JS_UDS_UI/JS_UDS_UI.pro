@@ -27,6 +27,7 @@ HEADERS += \
     Controls/investigationbar.h \
     Controls/investigationtypebar.h \
     Controls/pumpcontrol.h \
+    AppConstants.h \
     DAQ/connectionbar.h \
     DAQ/mainwindow.h \
     DAQ/readdata.h \

@@ -15,8 +15,11 @@ public:
     explicit PumpControl(QWidget *parent = nullptr);
     ~PumpControl();
     void resetPump();
-    int getPumpPower();
     int getPumpArduinoInput();
+    void setPumpInfusionRate(double infusion_rate);
+
+public slots:
+    void setPumpButtonsEnabled(bool);
 
 signals:
     void sendPumpRate(int);
@@ -30,7 +33,6 @@ private slots:
 private:
     Ui::PumpControl *ui;
     void initBar();
-    void convertToFlowrate();
 
     int pump_rate_percentage;
     int pump_rate_arduino_input;

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "AppConstants.h"
 #include "Popups/patientinfoentry.h"
 #include "DAQ/writedata.h"
 
@@ -22,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     initConnections();
     calculateObjectSizes();
     setSizes();
-    event_code = 0;
+    event_code = "0";
 
     QDir curr_dir = QDir(".");
     curr_dir.cdUp();
@@ -54,32 +55,39 @@ MainWindow::~MainWindow()
 
 void MainWindow::initConnections(){
     to_zero_sensors = false;
-    // 1 select test type
+
+    // MAIN WINDOW
+    connect(this, &MainWindow::sendConnectionOpen, ui->investigationBarT, &InvestigationTypeBar::receiveConnectionOpen);
+    connect(this, &MainWindow::sendEnablePumpButtons, ui->pump, &PumpControl::setPumpButtonsEnabled);
+    connect(this, &MainWindow::sendSetUDSView, ui->investigationBarC, &InvestigationBar::setUDSView);
+    connect(this, &MainWindow::sendSetTestView, ui->investigationBarC, &InvestigationBar::setTestView);
+    connect(this, &MainWindow::sendEnterRecording, ui->conBar, &ConnectionBar::setEnterRecordingMode);
+
+    // INVESTIGATIONS TYPE BAR
     connect(ui->investigationBarT, &InvestigationTypeBar::sendTestName, this, &MainWindow::receiveTestType);
     connect(ui->investigationBarT, &InvestigationTypeBar::sendExitTest, this, &MainWindow::receiveExitTestType);
-    connect(this, &MainWindow::sendConnectionOpen, ui->investigationBarT, &InvestigationTypeBar::receiveConnectionOpen);
     connect(ui->investigationBarT, &InvestigationTypeBar::sendTestSelected, ui->conBar, &ConnectionBar::receiveTestSelected);
 
-    // 2 serial comms
+    // SERIAL CONN BAR
     conn = new QSerialPort();
     connect(conn, SIGNAL(readyRead()), this, SLOT(serialReceived()));
     connect(ui->conBar->getConnectionButton(), &QPushButton::clicked, this, &MainWindow::connectToSerialPort);
 
-    // 3 patient management
-    connect(this, &MainWindow::sendSetUDSView, ui->investigationBarC, &InvestigationBar::setUDSView);
-    connect(this, &MainWindow::sendSetTestView, ui->investigationBarC, &InvestigationBar::setTestView);
+    // CONTROL BAR
     connect(ui->investigationBarC, &InvestigationBar::sendOpenNewPatient, this, &MainWindow::receiveOpenNewPatient);
     connect(ui->investigationBarC, &InvestigationBar::sendOpenExistingPatient, this, &MainWindow::receiveOpenExisitngPatient);
     connect(ui->investigationBarC, &InvestigationBar::sendClosePatient, this, &MainWindow::receiveClosePatient);
-    connect(ui->pump, &PumpControl::sendPumpRate, this, &MainWindow::recievePumpValue);
-
-
-    // 4 recording
     connect(ui->investigationBarC, &InvestigationBar::sendStartRecording, this, &MainWindow::recieveStartRecordingCSV);
     connect(ui->investigationBarC, &InvestigationBar::sendStopRecording, this, &MainWindow::recieveStopRecordingCSV);
-    connect(this, &MainWindow::sendEnterRecording, ui->conBar, &ConnectionBar::setEnterRecordingMode);
     connect(ui->investigationBarC, &InvestigationBar::sendEvent, this, &MainWindow::recieveEventCode);
     connect(ui->investigationBarC, &InvestigationBar::sendZeroPressure, this, &MainWindow::recieveZeroPressure);
+
+    // PUMP CONTROL
+    connect(ui->pump, &PumpControl::sendPumpRate, this, &MainWindow::recievePumpValue);
+
+    // VALUES DISPLAY
+
+    // TRACES
 }
 
 // UI
@@ -143,28 +151,35 @@ void MainWindow::receiveTestType(QString test){
     setWindowTitle(test);
 
     data_reader.setTestingType(test);
+    data_writer.setTestingType(test);
+    ui->valueDisplay->setTestingType(test);
+
+    ui->graphDisplay->setSampleWindowLength(SAMPLE_WINDOW_LENGTH);
+    ui->graphDisplay->setTestingType(test);
+
+
+    /*
     variable_names = data_reader.getChannelVarNames();
 
     std::map<int, QString> var_names = data_reader.getChannelNames();
     std::map<QString, int> plot_numbers = data_reader.getChannelPlotNumbers();
     QVector<QVector<double>> var_ranges = data_reader.getChannelRanges();
+
     QVector<QString> event_codes = data_reader.getEventCodes();
     QVector<QString> event_labels = data_reader.getEventLabels();
 
     // SET VARIABLE ORDER FOR LCDNS
-    ui->valueDisplay->setDisplayChannels(variable_names);
+    //ui->valueDisplay->setDisplayChannels(variable_names);
 
     // SET VARIABLES FOR CSV WRITER
-    data_writer.setVariableTitles(variable_names);
+    //data_writer.setVariableTitles(variable_names);
 
     // SET GRAPH DATA WINDOW
     ui->graphDisplay->setSampleWindowLength(200);
     ui->graphDisplay->setChannelNamesAndRanges(var_names, var_ranges, event_labels, plot_numbers);
 
-    // SET EVENT CODES INFO
-    ui->investigationBarC->setView(event_codes);
-
     qInfo() << "Investigation setting loaded: " << test;
+    */
 }
 
 void MainWindow::receiveExitTestType(){
@@ -205,12 +220,14 @@ void MainWindow::connectToSerialPort(){
         }
 
         writeToSerialPort(333);
+        emit sendEnablePumpButtons(true);
     } else {
         qInfo() << "Close Serial connection";
         readSerialData = false;
         conn->close();
         ui->investigationBarC->resetView();
         emit sendConnectionOpen(false);
+        emit sendEnablePumpButtons(false);
     }
 }
 
@@ -245,20 +262,21 @@ void MainWindow::serialReceived(){
 
 void MainWindow::processIncomingData(QString data_string, bool zero_sensors){
 
-    std::map<QString, double> curr_dataset = data_reader.readCurrentDataset(data_string, event_code, to_zero_sensors);
+    // ####### edit event code
+    std::map<QString, double> curr_dataset = data_reader.readCurrentDataset(data_string, 1, to_zero_sensors);
+    double infusion_flowrate = data_reader.getInfusionFlowrate();
+
     to_zero_sensors = false;
 
     ui->graphDisplay->updateEventLines();
     ui->valueDisplay->updateNumbers(curr_dataset);
     ui->graphDisplay->addDataset(curr_dataset);
+    ui->pump->setPumpInfusionRate(infusion_flowrate);
 
     if (write_to_csv){data_writer.writeDataToCSV(curr_dataset);}
 
     serialBuffer = "";
-    event_code = 0;
-
-    //qDebug() << event << zero_sensors;
-
+    event_code = "0";
 }
 
 void MainWindow::writeToSerialPort(int value){
@@ -328,14 +346,11 @@ void MainWindow::recieveStopRecordingCSV(){
 }
 
 void MainWindow::recieveEventCode(int code){
-    event_code = code;
-    ui->graphDisplay->createEventLine(event_code);
-    qDebug() << event_code;
+    ui->graphDisplay->createEventLine(EventConstants::EVENTS.at(code));
 }
 
 void MainWindow::recieveZeroPressure(){data_reader.setZeroPressure();}
 
 void MainWindow::recievePumpValue(int value){
-    qInfo() << "sdacfwd: " << QString::number(value);
     writeToSerialPort(value);
 }

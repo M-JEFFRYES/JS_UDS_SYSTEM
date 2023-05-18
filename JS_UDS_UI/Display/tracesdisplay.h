@@ -22,12 +22,15 @@ public:
     void setBackgroundColour(int red, int green, int blue);
 
     void setSampleWindowLength(int sample_window_length);
+    void setTestingType(QString test);
+
     void setChannelNamesAndRanges(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, QVector<QString> event_code_labels, std::map<QString, int> plot_numbers);
 
     void setChannelNames(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, int sample_window_length);
     void addDataset(std::map<QString, double> curr_dataset);
 
-    void createEventLine(int event);
+    //void createEventLine(int event);
+    void createEventLine(QString event);
     void updateEventLines();
     void loadEventData(QVector<double> events);
 
@@ -49,22 +52,27 @@ private:
 
     std::map<QString, double> convertRawDataset(std::map<QString, double> dataset);
 
-    int no_channels;
-    int no_samples;
-    QVector<QString> y_channel_names;
-    std::map<QString, int> plot_numbers;
-    int no_plots;
     std::map<int, QString> events_key;
+
+    QVector<QString> variables;
     QVector<QVector<double>> var_ranges;
+    QVector<int> plot_numbers;
     std::map<QString, double> y_offsets;
     std::map<QString, double> y_scales;
+
+    QVector<double> time_dataset;
+    QVector<QVector<double>> dataset;
+
+
+    int no_channels;
+    int no_samples;
+    //QVector<QString> y_channel_names;
+    int no_plots;
     double min_y;
     double max_y;
     double y_span;
     double y_buffer;
 
-    QVector<double> time_dataset;
-    QVector<QVector<double>> dataset;
 
     QCPAxisRect* graph_rect;
     QVector<QCPItemStraightLine*> horizontal_axes_lines;

@@ -1,5 +1,7 @@
 #include "writedata.h"
 
+#include "AppConstants.h"
+
 #include <QDir>
 #include <QObject>
 #include <QDebug>
@@ -11,10 +13,39 @@ WriteData::WriteData()
     csv_created = false;
 }
 
+void WriteData::setTestingType(QString test){
+
+    if (test == TestTypeConstants::PRESSURE_TEST_DESC){
+        variables = PressureConsts::VARS_ALL;
+    }  else if (test == TestTypeConstants::VOLUME_VOID_TEST_DESC){
+        variables = VolumeVoidConsts::VARS_ALL;
+    }  else if (test == TestTypeConstants::VOLUME_INFUSED_TEST_DESC){
+        variables = VolumeInfusedConsts::VARS_ALL;
+    }  else if (test == TestTypeConstants::INFUSION_RATE_TEST_DESC){
+        variables = InfusionRateConsts::VARS_ALL;
+    }  else if (test == TestTypeConstants::UDS_INVESTIGATION_DESC){
+        variables = UDSConsts::VARS_ALL;
+    }
+
+    no_display_names = variables.length();
+
+    csv_headers_line = "";
+    for (int i=0; i<no_display_names; i++){
+        csv_headers_line += variables[i];
+        csv_headers_line += ",";
+    }
+    csv_headers_line += "EVENT\n";
+}
+
+
+
+
+
 // Pre recording settings
 
 void WriteData::setFileDirectory(QString dir_path){directory_path = dir_path;}
 
+/*
 void WriteData::setVariableTitles(QVector<QString> variable_names){
 
     // set number of channels
@@ -32,7 +63,7 @@ void WriteData::setVariableTitles(QVector<QString> variable_names){
         csv_headers_line += ",";
     }
     csv_headers_line += "EVENT\n";
-}
+}*/
 
 void WriteData::loadMetaData(std::map<QString, QString> meta_data){
     this->meta_data = meta_data;
