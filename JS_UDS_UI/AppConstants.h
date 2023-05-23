@@ -11,6 +11,13 @@ namespace DimensionConstants
     const int MAX_CONTROL_BUTTON_WIDTH = 300;
 }
 
+namespace SerConnConstants
+{
+    const int BAUD_RATE = 9600;
+    const int START_DATA_TRANSMISSION = 333;
+    const int END_DATA_TRANSMISSION = 444;
+}
+
 namespace TestTypeConstants
 {
     const int UDS_INVESTIGATION = 0;
@@ -132,6 +139,12 @@ namespace EventConstants
         {LEAK_POINT, LEAK_POINT_LAB},
         {START_OF_VOIDING, START_OF_VOIDING_LAB},
     };
+}
+
+namespace PumpConstants
+{
+    const int PUMP_INPUT_MIN = 0;
+    const int PUMP_INPUT_MAX = 255;
 }
 
 #endif // EVENTCONSTS_H
