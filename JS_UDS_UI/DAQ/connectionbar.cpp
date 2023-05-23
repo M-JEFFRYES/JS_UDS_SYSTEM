@@ -17,7 +17,7 @@ ConnectionBar::~ConnectionBar()
     delete ui;
 }
 
-// FUNCTIONALITY
+// INITIALISATION
 
 void ConnectionBar::initButtons(){
     ui->connectButton->setCheckable(true);
@@ -30,28 +30,6 @@ void ConnectionBar::setBarHeights(int minimum, int maximum){
     setMaximumHeight(maximum);
 }
 
-void ConnectionBar::setConnected(){
-    ui->connectButton->setText("Disconnect");
-    ui->refreshButton->setEnabled(false);
-    ui->portNamesBox->setEnabled(false);
-}
-
-void ConnectionBar::setDisconnected(){
-    ui->connectButton->setText("Connect");
-    ui->refreshButton->setEnabled(true);
-    ui->portNamesBox->setEnabled(true);
-}
-
-void ConnectionBar::setTestSelected(bool selected){
-    ui->connectButton->setEnabled(selected);
-    ui->refreshButton->setEnabled(selected);
-    ui->portNamesBox->setEnabled(selected);
-}
-
-void ConnectionBar::setEnterRecordingMode(bool start){
-    ui->connectButton->setEnabled(!start);
-}
-
 bool ConnectionBar::isPortOpen(){
     return ui->connectButton->isChecked();
 }
@@ -62,6 +40,40 @@ void ConnectionBar::getOpenPorts(){
             ui->portNamesBox->addItem(port.portName(),port.description());
     int ind = QSerialPortInfo::availablePorts().length() - 1;
     ui->portNamesBox->setCurrentIndex(ind); // Default value to most likely
+}
+
+// TEST SELECTION
+
+void ConnectionBar::receiveTestSelected(bool selected){
+    setTestSelected(selected);
+}
+
+void ConnectionBar::setTestSelected(bool selected){
+    ui->connectButton->setEnabled(selected);
+    ui->refreshButton->setEnabled(selected);
+    ui->portNamesBox->setEnabled(selected);
+}
+
+// SERIAL CONNECTION
+
+void ConnectionBar::setConnected(){
+    ui->connectButton->setText("Disconnect");
+    ui->refreshButton->setEnabled(false);
+    ui->portNamesBox->setEnabled(false);
+    emit sendSerialConnectionMade(true);
+}
+
+void ConnectionBar::setDisconnected(){
+    ui->connectButton->setText("Connect");
+    ui->refreshButton->setEnabled(true);
+    ui->portNamesBox->setEnabled(true);
+    emit sendSerialConnectionMade(false);
+}
+
+// TEST RECORDING
+
+void ConnectionBar::setEnterRecordingMode(bool start){
+    ui->connectButton->setEnabled(!start);
 }
 
 
@@ -79,7 +91,6 @@ QString ConnectionBar::getSelectedPort(){
     return ui->portNamesBox->currentText();
 }
 
-
 // SLOTS
 
 void ConnectionBar::on_connectButton_clicked(){
@@ -93,13 +104,10 @@ void ConnectionBar::on_connectButton_clicked(){
     }
 }
 
-
 void ConnectionBar::on_refreshButton_clicked()
 {
     getOpenPorts();
 }
 
-void ConnectionBar::receiveTestSelected(bool selected){
-    setTestSelected(selected);
-}
+
 

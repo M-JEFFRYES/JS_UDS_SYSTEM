@@ -28,9 +28,14 @@ public:
     QString getSelectedPort();
 
 
+
 public slots:
     void receiveTestSelected(bool selected);
     void setEnterRecordingMode(bool start);
+
+signals:
+    void sendSerialConnectionMade(bool);
+
 private slots:
     void on_connectButton_clicked();
     void on_refreshButton_clicked();
