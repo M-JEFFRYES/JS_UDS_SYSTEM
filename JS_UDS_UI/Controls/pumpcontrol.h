@@ -14,6 +14,10 @@ class PumpControl : public QFrame
 public:
     explicit PumpControl(QWidget *parent = nullptr);
     ~PumpControl();
+
+    void setTestingType(QString test);
+    void setExitTestingType();
+
     void resetPump();
     int getPumpArduinoInput();
     void setPumpInfusionRate(double infusion_rate);
@@ -33,8 +37,7 @@ private slots:
 private:
     Ui::PumpControl *ui;
     void initBar();
-
-    int pump_rate_percentage;
+    void enablePump(bool enable);
     int pump_rate_arduino_input;
 
 };
