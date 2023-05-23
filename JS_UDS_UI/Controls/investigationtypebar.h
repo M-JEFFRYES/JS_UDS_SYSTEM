@@ -16,16 +16,15 @@ public:
     ~InvestigationTypeBar();
 
 signals:
-    void sendTestName(QString);
-    void sendExitTest();
+    void sendTestType(QString);
     void sendTestSelected(bool);
+    void sendExitTestType();
 
 public slots:
     void receiveConnectionOpen(bool open);
 
 private slots:
     void on_selectTestButton_clicked();
-
 
 private:
     Ui::InvestigationTypeBar *ui;

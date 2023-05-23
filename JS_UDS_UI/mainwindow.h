@@ -54,7 +54,7 @@ private:
     void setSerialConnection();
     void connectToSerialPort();
     void closeSerialConnection();
-    void processIncomingData(QString data_string, bool zero_sensors);
+    void processIncomingData(QString data_string);
 
     void writeToSerialPort(int value);
 
@@ -65,7 +65,7 @@ private:
     WriteData data_writer;
     bool write_to_csv;
     bool csv_created;
-    QString event_code;
+    int event_code;
     bool to_zero_sensors;
 
     // connection

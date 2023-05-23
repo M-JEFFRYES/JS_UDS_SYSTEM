@@ -14,13 +14,16 @@ class InvestigationBar : public QFrame
 public:
     explicit InvestigationBar(QWidget *parent = nullptr);
     ~InvestigationBar();
+    void setExitTestingType();
     void resetView();
-    void setUDSReadyView(bool set);
+
+    void setPatientInfoEntered(bool set);
 
 public slots:
-    void setInvestigationView(int);
-    void setUDSView();
-    void setTestView();
+    void recieveTestingType(QString);
+    void recieveSerialConnectionMade(bool);
+    //void setUDSView();
+    //void setTestView();
 
 signals:
     void sendOpenNewPatient();
@@ -44,6 +47,7 @@ private:
 
     void initBar();
 
+    QString test_type;
     int sensation_current_event_code;
 
 };

@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     initConnections();
     calculateObjectSizes();
     setSizes();
-    event_code = "0";
+    event_code = EventConstants::NO_EVENT;
 
     QDir curr_dir = QDir(".");
     curr_dir.cdUp();
@@ -56,38 +56,39 @@ MainWindow::~MainWindow()
 void MainWindow::initConnections(){
     to_zero_sensors = false;
 
-    // MAIN WINDOW
-    connect(this, &MainWindow::sendConnectionOpen, ui->investigationBarT, &InvestigationTypeBar::receiveConnectionOpen);
-    connect(this, &MainWindow::sendEnablePumpButtons, ui->pump, &PumpControl::setPumpButtonsEnabled);
-    connect(this, &MainWindow::sendSetUDSView, ui->investigationBarC, &InvestigationBar::setUDSView);
-    connect(this, &MainWindow::sendSetTestView, ui->investigationBarC, &InvestigationBar::setTestView);
-    connect(this, &MainWindow::sendEnterRecording, ui->conBar, &ConnectionBar::setEnterRecordingMode);
-
-    // INVESTIGATIONS TYPE BAR
-    connect(ui->investigationBarT, &InvestigationTypeBar::sendTestName, this, &MainWindow::receiveTestType);
-    connect(ui->investigationBarT, &InvestigationTypeBar::sendExitTest, this, &MainWindow::receiveExitTestType);
+    // 1 TEST SELECTION
+    connect(ui->investigationBarT, &InvestigationTypeBar::sendTestType, this, &MainWindow::receiveTestType);
+    connect(ui->investigationBarT, &InvestigationTypeBar::sendExitTestType, this, &MainWindow::receiveExitTestType);
     connect(ui->investigationBarT, &InvestigationTypeBar::sendTestSelected, ui->conBar, &ConnectionBar::receiveTestSelected);
+    connect(ui->investigationBarT, &InvestigationTypeBar::sendTestType, ui->investigationBarC, &InvestigationBar::recieveTestingType);
 
-    // SERIAL CONN BAR
+    // 2 SERIAL CONNECTION
     conn = new QSerialPort();
     connect(conn, SIGNAL(readyRead()), this, SLOT(serialReceived()));
     connect(ui->conBar->getConnectionButton(), &QPushButton::clicked, this, &MainWindow::connectToSerialPort);
+    connect(this, &MainWindow::sendConnectionOpen, ui->investigationBarT, &InvestigationTypeBar::receiveConnectionOpen);
+    connect(ui->conBar, &ConnectionBar::sendSerialConnectionMade, ui->investigationBarC, &InvestigationBar::recieveSerialConnectionMade);
 
-    // CONTROL BAR
+    // 3 PATIENT INFO
     connect(ui->investigationBarC, &InvestigationBar::sendOpenNewPatient, this, &MainWindow::receiveOpenNewPatient);
     connect(ui->investigationBarC, &InvestigationBar::sendOpenExistingPatient, this, &MainWindow::receiveOpenExisitngPatient);
     connect(ui->investigationBarC, &InvestigationBar::sendClosePatient, this, &MainWindow::receiveClosePatient);
-    connect(ui->investigationBarC, &InvestigationBar::sendStartRecording, this, &MainWindow::recieveStartRecordingCSV);
-    connect(ui->investigationBarC, &InvestigationBar::sendStopRecording, this, &MainWindow::recieveStopRecordingCSV);
-    connect(ui->investigationBarC, &InvestigationBar::sendEvent, this, &MainWindow::recieveEventCode);
+
+    // 4 TEST SETUP
+    connect(this, &MainWindow::sendEnablePumpButtons, ui->pump, &PumpControl::setPumpButtonsEnabled);
     connect(ui->investigationBarC, &InvestigationBar::sendZeroPressure, this, &MainWindow::recieveZeroPressure);
 
-    // PUMP CONTROL
+    // 5 TEST RECORDING
+    connect(this, &MainWindow::sendEnterRecording, ui->conBar, &ConnectionBar::setEnterRecordingMode);
+    connect(ui->investigationBarC, &InvestigationBar::sendStartRecording, this, &MainWindow::recieveStartRecordingCSV);
+    connect(ui->investigationBarC, &InvestigationBar::sendStopRecording, this, &MainWindow::recieveStopRecordingCSV);
+
+    // 6 EVENTS
+    connect(ui->investigationBarC, &InvestigationBar::sendEvent, this, &MainWindow::recieveEventCode);
     connect(ui->pump, &PumpControl::sendPumpRate, this, &MainWindow::recievePumpValue);
 
-    // VALUES DISPLAY
+    // 7 DATA LOGGING
 
-    // TRACES
 }
 
 // UI
@@ -145,7 +146,7 @@ void MainWindow::setSizes(){
     ui->pump->setMaximumHeight(pixel_sizes["inforbar_max"]);
 }
 
-// 1 Test type controls
+// 1 TEST SELECTION
 void MainWindow::receiveTestType(QString test){
     this->test = test;
     setWindowTitle(test);
@@ -153,56 +154,37 @@ void MainWindow::receiveTestType(QString test){
     data_reader.setTestingType(test);
     data_writer.setTestingType(test);
     ui->valueDisplay->setTestingType(test);
-
     ui->graphDisplay->setSampleWindowLength(SAMPLE_WINDOW_LENGTH);
     ui->graphDisplay->setTestingType(test);
-
-
-    /*
-    variable_names = data_reader.getChannelVarNames();
-
-    std::map<int, QString> var_names = data_reader.getChannelNames();
-    std::map<QString, int> plot_numbers = data_reader.getChannelPlotNumbers();
-    QVector<QVector<double>> var_ranges = data_reader.getChannelRanges();
-
-    QVector<QString> event_codes = data_reader.getEventCodes();
-    QVector<QString> event_labels = data_reader.getEventLabels();
-
-    // SET VARIABLE ORDER FOR LCDNS
-    //ui->valueDisplay->setDisplayChannels(variable_names);
-
-    // SET VARIABLES FOR CSV WRITER
-    //data_writer.setVariableTitles(variable_names);
-
-    // SET GRAPH DATA WINDOW
-    ui->graphDisplay->setSampleWindowLength(200);
-    ui->graphDisplay->setChannelNamesAndRanges(var_names, var_ranges, event_labels, plot_numbers);
+    ui->pump->setTestingType(test);
 
     qInfo() << "Investigation setting loaded: " << test;
-    */
 }
 
 void MainWindow::receiveExitTestType(){
-     ui->valueDisplay->displayReset();
-     ui->investigationBarC->resetView();
-     setWindowTitle("JS Urodynamics Without Borders");
-     qInfo() << "Investigation setting exited: " << test;
+    setWindowTitle("JS Urodynamics Without Borders");
+
+    ui->investigationBarC->setExitTestingType();
+    ui->valueDisplay->setExitTestingType();
+    ui->graphDisplay->setExitTestingType();
+    ui->pump->setExitTestingType();
+
+    qInfo() << "Investigation setting exited: " << test;
 }
 
-// 2 Connection Settings
+// 2 SERIAL CONNECTION
 void MainWindow::setSerialConnection(){
     serialBuffer = "";
-    baudRate = 9600;
     portName = ui->conBar->getSelectedPort();
     conn->setPortName(portName);
     //conn->open(QSerialPort::ReadWrite);
     conn->open(QIODevice::ReadWrite);
-    conn->setBaudRate(baudRate);
+    conn->setBaudRate(SerConnConstants::BAUD_RATE);
     conn->setDataBits(QSerialPort::Data8);
     conn->setParity(QSerialPort::NoParity);
     conn->setStopBits(QSerialPort::OneStop);
     conn->setFlowControl(QSerialPort::NoFlowControl);
-    qInfo() << "Serial connection parameters set (" << portName << "-" << baudRate << ")";
+    qInfo() << "Serial connection parameters set (" << portName << "-" << SerConnConstants::BAUD_RATE << ")";
 }
 
 void MainWindow::connectToSerialPort(){
@@ -210,7 +192,7 @@ void MainWindow::connectToSerialPort(){
         qInfo() << "Open Serial connection";
         setSerialConnection();
         readSerialData = true;
-        ui->investigationBarC->setUDSReadyView(patient_entered);
+        ui->investigationBarC->setPatientInfoEntered(patient_entered);
 
         emit sendConnectionOpen(true);
         if (test == "UDS Investigation"){
@@ -219,20 +201,20 @@ void MainWindow::connectToSerialPort(){
             emit sendSetTestView();
         }
 
-        writeToSerialPort(333);
+        writeToSerialPort(SerConnConstants::START_DATA_TRANSMISSION);
         emit sendEnablePumpButtons(true);
     } else {
         qInfo() << "Close Serial connection";
         readSerialData = false;
         conn->close();
-        ui->investigationBarC->resetView();
+        //ui->investigationBarC->resetView();
         emit sendConnectionOpen(false);
         emit sendEnablePumpButtons(false);
     }
 }
 
 void MainWindow::closeSerialConnection(){
-    writeToSerialPort(444);
+    writeToSerialPort(SerConnConstants::END_DATA_TRANSMISSION);
     ui->conBar->setDisconnected();
     conn->close();
     readSerialData = false;
@@ -254,16 +236,16 @@ void MainWindow::serialReceived(){
             serialBuffer += QString::fromStdString(serialData.toStdString());
 
         } else {
-            processIncomingData(bufferSplit.value(1), false);
+            processIncomingData(bufferSplit.value(1));
         }
     }
-
 }
 
-void MainWindow::processIncomingData(QString data_string, bool zero_sensors){
+void MainWindow::processIncomingData(QString data_string){
 
     // ####### edit event code
-    std::map<QString, double> curr_dataset = data_reader.readCurrentDataset(data_string, 1, to_zero_sensors);
+
+    std::map<QString, double> curr_dataset = data_reader.readCurrentDataset(data_string, event_code, to_zero_sensors);
     double infusion_flowrate = data_reader.getInfusionFlowrate();
 
     to_zero_sensors = false;
@@ -276,7 +258,7 @@ void MainWindow::processIncomingData(QString data_string, bool zero_sensors){
     if (write_to_csv){data_writer.writeDataToCSV(curr_dataset);}
 
     serialBuffer = "";
-    event_code = "0";
+    event_code = EventConstants::NO_EVENT;
 }
 
 void MainWindow::writeToSerialPort(int value){
@@ -304,12 +286,12 @@ void MainWindow::receiveOpenNewPatient(){
         std::map<QString, QString> patient_information = patientInfoPopup.getPatientInformation();
         setWindowTitle(patientInfoPopup.getWindowTitle());
 
-        ui->investigationBarC->setUDSReadyView(readSerialData);
+        ui->investigationBarC->setPatientInfoEntered(readSerialData);
         data_writer.loadMetaData(patient_information);
 
     } else if (dialogCode == QDialog::Rejected) {
         patient_entered = false;
-        ui->investigationBarC->setUDSReadyView(patient_entered);
+        ui->investigationBarC->setPatientInfoEntered(patient_entered);
         ui->investigationBarC->resetView();
         qInfo() << "Patient information entry failed";
     }
@@ -317,18 +299,17 @@ void MainWindow::receiveOpenNewPatient(){
 
 void MainWindow::receiveOpenExisitngPatient(){
     closeSerialConnection();
-
     // add code to clear graph and load patient
 }
 
 void MainWindow::receiveClosePatient(){
-    ui->investigationBarC->resetView();
+    /*ui->investigationBarC->resetView();
     if (test == "UDS Investigation"){
         emit sendSetUDSView();
     } else {
         emit sendSetTestView();
-    }
-    ui->investigationBarC->setUDSReadyView(false);
+    }*/
+    ui->investigationBarC->setPatientInfoEntered(false);
     setWindowTitle(generic_window_title);
 }
 
@@ -347,6 +328,7 @@ void MainWindow::recieveStopRecordingCSV(){
 
 void MainWindow::recieveEventCode(int code){
     ui->graphDisplay->createEventLine(EventConstants::EVENTS.at(code));
+    event_code = code;
 }
 
 void MainWindow::recieveZeroPressure(){data_reader.setZeroPressure();}

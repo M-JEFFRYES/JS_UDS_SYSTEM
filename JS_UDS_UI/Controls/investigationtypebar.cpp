@@ -31,14 +31,14 @@ void InvestigationTypeBar::setTestSelected(){
     ui->selectTestButton->setText("Exit Test");
     ui->testsBox->setEnabled(false);
     current_test_type = ui->testsBox->currentText();
-    emit sendTestName(current_test_type);
+    emit sendTestType(current_test_type);
 }
 
 void InvestigationTypeBar::exitTestSelected(){
     current_test_type = "";
     ui->selectTestButton->setText("Select Investigation Type");
     ui->testsBox->setEnabled(true);
-    emit sendExitTest();
+    emit sendExitTestType();
 }
 
 void InvestigationTypeBar::setConnectionOpen(bool open){

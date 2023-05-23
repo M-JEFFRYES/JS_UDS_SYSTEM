@@ -2,6 +2,7 @@
 #include "ui_investigationbar.h"
 
 #include "AppConstants.h"
+#include <QDebug>
 
 InvestigationBar::InvestigationBar(QWidget *parent) :
     QFrame(parent),
@@ -15,6 +16,8 @@ InvestigationBar::~InvestigationBar()
 {
     delete ui;
 }
+
+// INITIALISATION
 
 void InvestigationBar::initBar(){
 
@@ -35,6 +38,7 @@ void InvestigationBar::initBar(){
     ui->newPatientButton->setCheckable(true);
     ui->existingPatientButton->setCheckable(true);
     ui->recordButton->setCheckable(true);
+
     resetView();
 }
 
@@ -43,57 +47,104 @@ void InvestigationBar::resetView(){
     ui->newPatientButton->setVisible(true);
     ui->newPatientButton->setEnabled(false);
 
-    ui->existingPatientButton->setVisible(true);
+    ui->existingPatientButton->setVisible(false);
     ui->existingPatientButton->setEnabled(false);
 
     ui->recordButton->setEnabled(false);
 
     ui->zeroPressureButton->setVisible(true);
+    ui->zeroPressureButton->setEnabled(false);
 
     ui->sensationsButton->setVisible(false);
+    ui->sensationsButton->setEnabled(false);
     ui->sensationsButton->setText(EventConstants::FIRST_DESIRE_DESC);
     sensation_current_event_code = EventConstants::FIRST_DESIRE;
+
 }
 
-void InvestigationBar::setInvestigationView(int test_code){
-    switch (test_code){
-        case TestTypeConstants::UDS_INVESTIGATION:
-            ui->newPatientButton->setEnabled(true);
-            ui->existingPatientButton->setEnabled(true);
-            ui->sensationsButton->setVisible(true);
-            break;
-        case TestTypeConstants::PRESSURE_TEST:
-        case TestTypeConstants::VOLUME_VOID_TEST:
-        case TestTypeConstants::VOLUME_INFUSED_TEST:
-        case TestTypeConstants::INFUSION_RATE_TEST:
-            ui->newPatientButton->setVisible(false);
-            ui->existingPatientButton->setVisible(false);
-            ui->recordButton->setEnabled(true);
-            break;
+// TEST SELECTION
+
+void InvestigationBar::recieveTestingType(QString test){
+    test_type = test;
+    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC){
+        ui->sensationsButton->setVisible(true);
+
+    }  else if (test_type == TestTypeConstants::PRESSURE_TEST_DESC){
+        ui->newPatientButton->setVisible(false);
+        ui->recordButton->setEnabled(true);
+
+    }  else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC){
+        ui->newPatientButton->setVisible(false);
+        ui->recordButton->setEnabled(true);
+
+    }  else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC){
+        ui->newPatientButton->setVisible(false);
+        ui->recordButton->setEnabled(true);
+
+    }  else if (test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC){
+        ui->newPatientButton->setVisible(false);
+        ui->recordButton->setEnabled(true);
     }
 }
 
-
-void InvestigationBar::setUDSView(){
-    ui->newPatientButton->setEnabled(true);
-    ui->existingPatientButton->setEnabled(true);
-    ui->sensationsButton->setVisible(true);
+void InvestigationBar::setExitTestingType(){
+    resetView();
+    qDebug() << "this ran";
 }
 
-void InvestigationBar::setUDSReadyView(bool set){
+// SERIAL CONNECTION
+
+void InvestigationBar::recieveSerialConnectionMade(bool connection_made){
+    ui->newPatientButton->setEnabled(connection_made);
+    ui->zeroPressureButton->setEnabled(connection_made);
+}
+
+// PATIENT ENTERED
+
+void InvestigationBar::setPatientInfoEntered(bool set){
     ui->recordButton->setEnabled(set);
 }
 
-void InvestigationBar::setTestView(){
-    ui->newPatientButton->setVisible(false);
-    ui->existingPatientButton->setVisible(false);
-    ui->recordButton->setEnabled(true);
+// RECORD INVESTIGATION
+
+void InvestigationBar::recordInvestigationControl()
+{
+    bool investigation_started = ui->recordButton->isChecked();
+
+    if (investigation_started){
+        ui->recordButton->setText("Stop");
+        emit sendStartRecording();
+    } else {
+        ui->recordButton->setText("Start");
+        emit sendStopRecording();
+    }
+
+    ui->zeroPressureButton->setEnabled(!investigation_started);
+    ui->newPatientButton->setEnabled(!investigation_started);
+
+    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC){
+        ui->sensationsButton->setEnabled(investigation_started);
+
+    }  else if (test_type == TestTypeConstants::PRESSURE_TEST_DESC){
+        ui->zeroPressureButton->setEnabled(!investigation_started);
+
+    }  else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC){
+        ui->zeroPressureButton->setEnabled(!investigation_started);
+
+    }  else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC){
+        ui->zeroPressureButton->setEnabled(!investigation_started);
+
+    }  else if (test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC){
+        ui->zeroPressureButton->setEnabled(!investigation_started);
+    }
 }
+
+// BUTTON FUNCTIONALITY
 
 void InvestigationBar::openNewPatient()
 {
     bool open = ui->newPatientButton->isChecked();
-    ui->existingPatientButton->setVisible(!open);
+    //ui->existingPatientButton->setVisible(!open);
 
     if (open){
         ui->newPatientButton->setText("Exit Patient");
@@ -119,27 +170,6 @@ void InvestigationBar::openExistingPatient()
         emit sendClosePatient();
     }
    ;
-}
-
-void InvestigationBar::recordInvestigationControl()
-{
-    if (ui->recordButton->isChecked()){
-        ui->recordButton->setText("Stop");
-        ui->newPatientButton->setEnabled(false);
-        ui->existingPatientButton->setEnabled(false);
-        ui->zeroPressureButton->setVisible(false);
-
-        ui->sensationsButton->setEnabled(true);
-
-        emit sendStartRecording();
-
-    } else {
-        ui->recordButton->setText("Start");
-        ui->newPatientButton->setEnabled(true);
-        ui->existingPatientButton->setEnabled(true);
-        ui->zeroPressureButton->setVisible(true);
-        emit sendStopRecording();
-    }
 }
 
 void InvestigationBar::setZeroPressure(){emit sendZeroPressure();}
@@ -170,6 +200,18 @@ void InvestigationBar::logSensation(){
 
 }
 
+/*
+ *
+void InvestigationBar::setTestView(){
+    ui->newPatientButton->setVisible(false);
+    ui->existingPatientButton->setVisible(false);
+    ui->recordButton->setEnabled(true);
+}
 
+void InvestigationBar::setUDSView(){
+    ui->newPatientButton->setEnabled(true);
+    ui->existingPatientButton->setEnabled(true);
+    ui->sensationsButton->setVisible(true);
+}
 
-
+*/
