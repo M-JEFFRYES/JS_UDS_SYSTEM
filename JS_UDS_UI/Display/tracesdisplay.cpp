@@ -44,8 +44,8 @@ void TracesDisplay::setAxesColours(){
 
 void TracesDisplay::setDataLineColours(QVector<QPen> line_colours){data_line_colours = line_colours;}
 
-
 // INIT
+
 void TracesDisplay::setSampleWindowLength(int sample_window_length){no_samples = sample_window_length;}
 
 void TracesDisplay::setTestingType(QString test){
@@ -104,48 +104,8 @@ void TracesDisplay::setTestingType(QString test){
 
 }
 
-
-// 2 add channel names and ranges. init graph
-void TracesDisplay::setChannelNamesAndRanges(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, QVector<QString> event_code_labels, std::map<QString, int> plot_numbers){
-   /*this->var_ranges = var_ranges;
-   this->plot_numbers = plot_numbers;
-
-   events_key[0] = "None";
-    for (int i=0; i<event_code_labels.length(); i++){
-        events_key[i+1] = event_code_labels.at(i);
-    }
-
-    y_channel_names.clear();
-    y_offsets.clear();
-    y_scales.clear();
-    clearEventLines();
-
-    no_channels = var_names.size();
-    QString var_name;
-
-    int max = 0;
-    for (auto const& x : plot_numbers){
-        if(x.second > max){max=x.second;}
-    }
-    no_plots = max +1;
-
-
-    for (int i=1; i<no_channels; i++){
-        var_name = var_names[i];
-        y_channel_names.append(var_name);
-        y_offsets[var_name]= getVarYOffset(i-1);
-        y_scales[var_name] = getVarYScaling(y_span, var_ranges[i-1][0], var_ranges[i-1][1]);
-    }
-    setGraphLims();
-    initGraphDatasets();
-    setGraphFrame();
-    setHorizontalAxisLines();
-    setChannelTraces();
-    setYTicks();
-
-    graph_rect->axis(QCPAxis::atLeft)->setRange(min_y, max_y);
-    ui->graph->replot();
-    */
+void TracesDisplay::setExitTestingType(){
+    // add func
 }
 
 double TracesDisplay::getVarYOffset(int var_number){
@@ -244,39 +204,19 @@ void TracesDisplay::setYTicks(){
 
     double offset;
     double previous_offset = -1;
-    double mid_range;
 
     for (int i=0; i < no_channels; i++){
 
         offset = getVarYOffset(i);
         if (previous_offset != offset){
             y_tick_vals.append(offset);
-            //y_tick_vals.append(offset + (y_span/2));
             y_tick_vals.append(offset + y_span);
-
             y_ticks_labs.append(QString::number(var_ranges.at(i)[0]));
-           // mid_range = (var_ranges.at(i)[1] - var_ranges.at(i)[0])/2;
-            //y_ticks_labs.append(QString::number(mid_range));
             y_ticks_labs.append(QString::number(var_ranges.at(i)[1]));
 
         }
         previous_offset = offset;
      }
-
-   /*
-    for (int i=(no_plots - 1); i>=0; i--){
-        var_name = y_channel_names.at(i);
-        tick_val = y_offsets[var_name];
-
-        y_tick_vals.append(tick_val);
-        y_tick_vals.append(tick_val + (y_span/2));
-        y_tick_vals.append(tick_val + y_span);
-
-        y_ticks_labs.append(QString::number(var_ranges.at(i)[0]));
-
-
-
-    }*/
 
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
     ui->graph->yAxis->setTicker(textTicker);
@@ -286,8 +226,7 @@ void TracesDisplay::setYTicks(){
     ui->graph->yAxis->setLabel(" ");
 }
 
-
-// loading
+// UPDATING DATASET
 
 void TracesDisplay::addDataset(std::map<QString, double> curr_dataset){
     std::map<QString, double> current_dataset = convertRawDataset(curr_dataset);
@@ -319,14 +258,13 @@ std::map<QString, double> TracesDisplay::convertRawDataset(std::map<QString, dou
 }
 
 void TracesDisplay::loadGraphData(){
-
     for (int i=0; i < no_channels; i++){
         channel_plots[i]->setData(time_dataset, dataset.at(i));
     }
-
 }
 
 // EVENT LINES
+
 void TracesDisplay::createEventLine(QString event){
     QCPItemStraightLine *event_line = new QCPItemStraightLine(ui->graph);
     event_line->setPen(x_axes_pen);
@@ -341,22 +279,6 @@ void TracesDisplay::createEventLine(QString event){
     event_label->position->setCoords(no_samples-2 , (max_y-y_buffer));
     event_labels.append(event_label);
 }
-
-/*
-void TracesDisplay::createEventLine(int event){
-    QCPItemStraightLine *event_line = new QCPItemStraightLine(ui->graph);
-    event_line->setPen(x_axes_pen);
-    event_line->point1->setCoords(no_samples-1, min_y);  // location of point 1 in plot coordinate
-    event_line->point2->setCoords(no_samples-1, max_y);
-    event_lines.append(event_line);
-
-    QCPItemText *event_label = new QCPItemText(ui->graph);
-    event_label->setText(events_key[event]);
-    event_label->setPen(x_axes_pen);
-    event_label->setColor(x_axes_pen.color());
-    event_label->position->setCoords(no_samples-2 , (max_y-y_buffer));
-    event_labels.append(event_label);
-} */
 
 void TracesDisplay::updateEventLines(){
     int x;
@@ -407,14 +329,3 @@ void TracesDisplay::clearEventLines(){
     }
     event_labels.clear();
 }
-
-
-
-
-
-
-
-
-
-
-

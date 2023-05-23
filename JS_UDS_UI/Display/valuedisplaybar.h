@@ -18,9 +18,9 @@ public:
     ~ValueDisplayBar();
 
     void setTestingType(QString test);
+    void setExitTestingType();
 
     void setDisplayChannels(QVector<QString> display_names);
-    void displayReset();
     void updateNumbers(std::map<QString, double> data);
 
 private:

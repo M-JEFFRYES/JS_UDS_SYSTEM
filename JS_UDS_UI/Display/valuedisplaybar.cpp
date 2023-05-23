@@ -53,10 +53,6 @@ void ValueDisplayBar::initDisplays(){
 
 }
 
-void ValueDisplayBar::displayReset(){
-    initDisplays();
-}
-
 void ValueDisplayBar::setTestingType(QString test){
 
     if (test == TestTypeConstants::UDS_INVESTIGATION_DESC){
@@ -84,6 +80,10 @@ void ValueDisplayBar::setTestingType(QString test){
         display_numbers[i]->display(0.0);
     }
 
+}
+
+void ValueDisplayBar::setExitTestingType(){
+    initDisplays();
 }
 
 /*

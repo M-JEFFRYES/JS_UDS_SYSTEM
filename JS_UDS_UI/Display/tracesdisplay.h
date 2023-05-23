@@ -23,10 +23,10 @@ public:
 
     void setSampleWindowLength(int sample_window_length);
     void setTestingType(QString test);
+    void setExitTestingType();
 
-    void setChannelNamesAndRanges(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, QVector<QString> event_code_labels, std::map<QString, int> plot_numbers);
 
-    void setChannelNames(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, int sample_window_length);
+    //void setChannelNames(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, int sample_window_length);
     void addDataset(std::map<QString, double> curr_dataset);
 
     //void createEventLine(int event);
