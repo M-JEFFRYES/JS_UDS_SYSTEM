@@ -27,10 +27,15 @@
 *.lib
 
 # Executables
-*.exe
+
 *.out
 *.app
 
 build-JS_UDS_UI-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/
 *.log
 investigations/
+JS_UDS_UI_Release_32-bit/*
+
+compile/RUN_WDQT_32-BIT.bat
+compile/installer_setup_script_32-bit.iss
+JS_UDS_UI_Release_32-bit/release/JS_UDS_UI.exe
