@@ -4,22 +4,19 @@
 #include "AppConstants.h"
 #include <QDebug>
 
-InvestigationBar::InvestigationBar(QWidget *parent) :
-    QFrame(parent),
-    ui(new Ui::InvestigationBar)
-{
+InvestigationBar::InvestigationBar(QWidget* parent) : QFrame(parent),
+                                                      ui(new Ui::InvestigationBar) {
     ui->setupUi(this);
     initBar();
 }
 
-InvestigationBar::~InvestigationBar()
-{
+InvestigationBar::~InvestigationBar() {
     delete ui;
 }
 
 // INITIALISATION
 
-void InvestigationBar::initBar(){
+void InvestigationBar::initBar() {
 
     ui->newPatientButton->setMaximumWidth(DimensionConstants::MAX_CONTROL_BUTTON_WIDTH);
     ui->existingPatientButton->setMaximumWidth(DimensionConstants::MAX_CONTROL_BUTTON_WIDTH);
@@ -42,7 +39,7 @@ void InvestigationBar::initBar(){
     resetView();
 }
 
-void InvestigationBar::resetView(){
+void InvestigationBar::resetView() {
 
     ui->newPatientButton->setVisible(true);
     ui->newPatientButton->setEnabled(false);
@@ -59,59 +56,57 @@ void InvestigationBar::resetView(){
     ui->sensationsButton->setEnabled(false);
     ui->sensationsButton->setText(EventConstants::FIRST_DESIRE_DESC);
     sensation_current_event_code = EventConstants::FIRST_DESIRE;
-
 }
 
 // TEST SELECTION
 
-void InvestigationBar::recieveTestingType(QString test){
+void InvestigationBar::recieveTestingType(QString test) {
     test_type = test;
-    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC){
+    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC) {
         ui->sensationsButton->setVisible(true);
 
-    }  else if (test_type == TestTypeConstants::PRESSURE_TEST_DESC){
+    } else if (test_type == TestTypeConstants::PRESSURE_TEST_DESC) {
         ui->newPatientButton->setVisible(false);
         ui->recordButton->setEnabled(true);
 
-    }  else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC){
+    } else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC) {
         ui->newPatientButton->setVisible(false);
         ui->recordButton->setEnabled(true);
 
-    }  else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC){
+    } else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC) {
         ui->newPatientButton->setVisible(false);
         ui->recordButton->setEnabled(true);
 
-    }  else if (test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC){
+    } else if (test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC) {
         ui->newPatientButton->setVisible(false);
         ui->recordButton->setEnabled(true);
     }
 }
 
-void InvestigationBar::setExitTestingType(){
+void InvestigationBar::setExitTestingType() {
     resetView();
     qDebug() << "this ran";
 }
 
 // SERIAL CONNECTION
 
-void InvestigationBar::recieveSerialConnectionMade(bool connection_made){
+void InvestigationBar::recieveSerialConnectionMade(bool connection_made) {
     ui->newPatientButton->setEnabled(connection_made);
     ui->zeroPressureButton->setEnabled(connection_made);
 }
 
 // PATIENT ENTERED
 
-void InvestigationBar::setPatientInfoEntered(bool set){
+void InvestigationBar::setPatientInfoEntered(bool set) {
     ui->recordButton->setEnabled(set);
 }
 
 // RECORD INVESTIGATION
 
-void InvestigationBar::recordInvestigationControl()
-{
+void InvestigationBar::recordInvestigationControl() {
     bool investigation_started = ui->recordButton->isChecked();
 
-    if (investigation_started){
+    if (investigation_started) {
         ui->recordButton->setText("Stop");
         emit sendStartRecording();
     } else {
@@ -122,31 +117,30 @@ void InvestigationBar::recordInvestigationControl()
     ui->zeroPressureButton->setEnabled(!investigation_started);
     ui->newPatientButton->setEnabled(!investigation_started);
 
-    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC){
+    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC) {
         ui->sensationsButton->setEnabled(investigation_started);
 
-    }  else if (test_type == TestTypeConstants::PRESSURE_TEST_DESC){
+    } else if (test_type == TestTypeConstants::PRESSURE_TEST_DESC) {
         ui->zeroPressureButton->setEnabled(!investigation_started);
 
-    }  else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC){
+    } else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC) {
         ui->zeroPressureButton->setEnabled(!investigation_started);
 
-    }  else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC){
+    } else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC) {
         ui->zeroPressureButton->setEnabled(!investigation_started);
 
-    }  else if (test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC){
+    } else if (test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC) {
         ui->zeroPressureButton->setEnabled(!investigation_started);
     }
 }
 
 // BUTTON FUNCTIONALITY
 
-void InvestigationBar::openNewPatient()
-{
+void InvestigationBar::openNewPatient() {
     bool open = ui->newPatientButton->isChecked();
-    //ui->existingPatientButton->setVisible(!open);
+    // ui->existingPatientButton->setVisible(!open);
 
-    if (open){
+    if (open) {
         ui->newPatientButton->setText("Exit Patient");
         emit sendOpenNewPatient();
 
@@ -154,50 +148,47 @@ void InvestigationBar::openNewPatient()
         ui->newPatientButton->setText("New Patient");
         emit sendClosePatient();
     }
-
 }
 
-void InvestigationBar::openExistingPatient()
-{
+void InvestigationBar::openExistingPatient() {
     bool open = ui->existingPatientButton->isChecked();
     ui->newPatientButton->setVisible(!open);
-    if (open){
+    if (open) {
         ui->newPatientButton->setText("Exit Patient");
         emit sendOpenExistingPatient();
 
     } else {
         ui->newPatientButton->setText("Existing Patient");
         emit sendClosePatient();
-    }
-   ;
+    };
 }
 
-void InvestigationBar::setZeroPressure(){emit sendZeroPressure();}
+void InvestigationBar::setZeroPressure() {
+    emit sendZeroPressure();
+}
 
-void InvestigationBar::logSensation(){
+void InvestigationBar::logSensation() {
 
     switch (sensation_current_event_code) {
-        case EventConstants::FIRST_DESIRE:
-            emit sendEvent(EventConstants::FIRST_DESIRE);
-            ui->sensationsButton->setText(EventConstants::NORMAL_DESIRE_DESC);
-            sensation_current_event_code = EventConstants::NORMAL_DESIRE;
-            break;
-        case EventConstants::NORMAL_DESIRE:
-            emit sendEvent(EventConstants::NORMAL_DESIRE);
-            ui->sensationsButton->setText(EventConstants::STRONG_DESIRE_DESC);
-            sensation_current_event_code = EventConstants::STRONG_DESIRE;
-            break;
-        case EventConstants::STRONG_DESIRE:
-            emit sendEvent(EventConstants::STRONG_DESIRE);
-            ui->sensationsButton->setText(EventConstants::URGENCY_DESC);
-            sensation_current_event_code = EventConstants::URGENCY;
-            break;
-        case EventConstants::URGENCY:
-            emit sendEvent(EventConstants::URGENCY);
-            break;
+    case EventConstants::FIRST_DESIRE:
+        emit sendEvent(EventConstants::FIRST_DESIRE);
+        ui->sensationsButton->setText(EventConstants::NORMAL_DESIRE_DESC);
+        sensation_current_event_code = EventConstants::NORMAL_DESIRE;
+        break;
+    case EventConstants::NORMAL_DESIRE:
+        emit sendEvent(EventConstants::NORMAL_DESIRE);
+        ui->sensationsButton->setText(EventConstants::STRONG_DESIRE_DESC);
+        sensation_current_event_code = EventConstants::STRONG_DESIRE;
+        break;
+    case EventConstants::STRONG_DESIRE:
+        emit sendEvent(EventConstants::STRONG_DESIRE);
+        ui->sensationsButton->setText(EventConstants::URGENCY_DESC);
+        sensation_current_event_code = EventConstants::URGENCY;
+        break;
+    case EventConstants::URGENCY:
+        emit sendEvent(EventConstants::URGENCY);
+        break;
     }
-
-
 }
 
 /*

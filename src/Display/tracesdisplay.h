@@ -9,12 +9,11 @@ namespace Ui {
 class TracesDisplay;
 }
 
-class TracesDisplay : public QFrame
-{
+class TracesDisplay : public QFrame {
     Q_OBJECT
 
-public:
-    explicit TracesDisplay(QWidget *parent = nullptr);
+  public:
+    explicit TracesDisplay(QWidget* parent = nullptr);
     ~TracesDisplay();
 
     void setHorizontalAxesColour(QPen axes_colour);
@@ -25,18 +24,16 @@ public:
     void setTestingType(QString test);
     void setExitTestingType();
 
-
-    //void setChannelNames(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, int sample_window_length);
+    // void setChannelNames(std::map<int, QString> var_names, QVector<QVector<double>> var_ranges, int sample_window_length);
     void addDataset(std::map<QString, double> curr_dataset);
 
-    //void createEventLine(int event);
+    // void createEventLine(int event);
     void createEventLine(QString event);
     void updateEventLines();
     void loadEventData(QVector<double> events);
 
-
-private:
-    Ui::TracesDisplay *ui;
+  private:
+    Ui::TracesDisplay* ui;
 
     void setAxesColours();
     double getVarYOffset(int var_number);
@@ -63,16 +60,14 @@ private:
     QVector<double> time_dataset;
     QVector<QVector<double>> dataset;
 
-
     int no_channels;
     int no_samples;
-    //QVector<QString> y_channel_names;
+    // QVector<QString> y_channel_names;
     int no_plots;
     double min_y;
     double max_y;
     double y_span;
     double y_buffer;
-
 
     QCPAxisRect* graph_rect;
     QVector<QCPItemStraightLine*> horizontal_axes_lines;

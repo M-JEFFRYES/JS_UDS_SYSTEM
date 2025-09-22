@@ -12,10 +12,8 @@
 
 #include <DAQ/readdata.h>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     generic_window_title = "Jeffryes-Solomon Low Cost Urodynamics Machine";
     setWindowTitle(generic_window_title);
@@ -29,31 +27,29 @@ MainWindow::MainWindow(QWidget *parent)
     curr_dir.cdUp();
     curr_dir.cd("data");
     data_writer.setFileDirectory(curr_dir.absolutePath());
-    write_to_csv=false;
-    csv_created=false;
+    write_to_csv = false;
+    csv_created = false;
     readSerialData = false;
     patient_entered = false;
 
-    ui->graphDisplay->setBackgroundColour(30,30,30);
-    ui->graphDisplay->setHorizontalAxesColour(QPen(QColor(255,255,255)));
-    QVector<QPen> line_colours ={
-        QPen(QColor(0,0,255)),
-        QPen(QColor(255,0,0)),
-        QPen(QColor(0,255,0)),
-        QPen(QColor(255,165,0)),
-        QPen(QColor(237,7,226)),
-        QPen(QColor(255,255,0)),
-        QPen(QColor(150,75,0))
-    };
+    ui->graphDisplay->setBackgroundColour(30, 30, 30);
+    ui->graphDisplay->setHorizontalAxesColour(QPen(QColor(255, 255, 255)));
+    QVector<QPen> line_colours = {
+        QPen(QColor(0, 0, 255)),
+        QPen(QColor(255, 0, 0)),
+        QPen(QColor(0, 255, 0)),
+        QPen(QColor(255, 165, 0)),
+        QPen(QColor(237, 7, 226)),
+        QPen(QColor(255, 255, 0)),
+        QPen(QColor(150, 75, 0))};
     ui->graphDisplay->setDataLineColours(line_colours);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::initConnections(){
+void MainWindow::initConnections() {
     to_zero_sensors = false;
 
     // 1 TEST SELECTION
@@ -88,15 +84,14 @@ void MainWindow::initConnections(){
     connect(ui->pump, &PumpControl::sendPumpRate, this, &MainWindow::recievePumpValue);
 
     // 7 DATA LOGGING
-
 }
 
 // UI
-int MainWindow::calculatePixels(double length, double percentage){
-    return (int) (length * percentage);
+int MainWindow::calculatePixels(double length, double percentage) {
+    return (int)(length * percentage);
 }
 
-void MainWindow::calculateObjectSizes(){
+void MainWindow::calculateObjectSizes() {
     double min_percentage;
     double max_percentage;
     double win_height;
@@ -122,19 +117,18 @@ void MainWindow::calculateObjectSizes(){
 
     // PLOTS
 
-
-    //FOOTER
+    // FOOTER
     min_percentage = 0.1;
     max_percentage = 0.15;
     pixel_sizes["footer_min"] = calculatePixels(win_height, min_percentage);
     pixel_sizes["footer_max"] = calculatePixels(win_height, max_percentage);
 }
 
-void MainWindow::setSizes(){
-    ui->investigationBarT->setContentsMargins(pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"],pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"]);
-    ui->conBar->setContentsMargins(pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"],pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"]);
-    ui->investigationBarC->setContentsMargins(pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"],pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"]);
-    ui->pump->setContentsMargins(pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"],pixel_sizes["bar_padding_x"],pixel_sizes["bar_padding_y"]);
+void MainWindow::setSizes() {
+    ui->investigationBarT->setContentsMargins(pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"], pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"]);
+    ui->conBar->setContentsMargins(pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"], pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"]);
+    ui->investigationBarC->setContentsMargins(pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"], pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"]);
+    ui->pump->setContentsMargins(pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"], pixel_sizes["bar_padding_x"], pixel_sizes["bar_padding_y"]);
 
     ui->investigationBarT->setMinimumHeight(pixel_sizes["header_min"]);
     ui->investigationBarT->setMaximumHeight(pixel_sizes["header_max"]);
@@ -147,7 +141,7 @@ void MainWindow::setSizes(){
 }
 
 // 1 TEST SELECTION
-void MainWindow::receiveTestType(QString test){
+void MainWindow::receiveTestType(QString test) {
     this->test = test;
     setWindowTitle(test);
 
@@ -161,7 +155,7 @@ void MainWindow::receiveTestType(QString test){
     qInfo() << "Investigation setting loaded: " << test;
 }
 
-void MainWindow::receiveExitTestType(){
+void MainWindow::receiveExitTestType() {
     setWindowTitle("JS Urodynamics Without Borders");
 
     ui->investigationBarC->setExitTestingType();
@@ -173,11 +167,11 @@ void MainWindow::receiveExitTestType(){
 }
 
 // 2 SERIAL CONNECTION
-void MainWindow::setSerialConnection(){
+void MainWindow::setSerialConnection() {
     serialBuffer = "";
     portName = ui->conBar->getSelectedPort();
     conn->setPortName(portName);
-    //conn->open(QSerialPort::ReadWrite);
+    // conn->open(QSerialPort::ReadWrite);
     conn->open(QIODevice::ReadWrite);
     conn->setBaudRate(SerConnConstants::BAUD_RATE);
     conn->setDataBits(QSerialPort::Data8);
@@ -187,15 +181,15 @@ void MainWindow::setSerialConnection(){
     qInfo() << "Serial connection parameters set (" << portName << "-" << SerConnConstants::BAUD_RATE << ")";
 }
 
-void MainWindow::connectToSerialPort(){
-    if (ui->conBar->isPortOpen()){
+void MainWindow::connectToSerialPort() {
+    if (ui->conBar->isPortOpen()) {
         qInfo() << "Open Serial connection";
         setSerialConnection();
         readSerialData = true;
         ui->investigationBarC->setPatientInfoEntered(patient_entered);
 
         emit sendConnectionOpen(true);
-        if (test == "UDS Investigation"){
+        if (test == "UDS Investigation") {
             emit sendSetUDSView();
         } else {
             emit sendSetTestView();
@@ -207,20 +201,20 @@ void MainWindow::connectToSerialPort(){
         qInfo() << "Close Serial connection";
         readSerialData = false;
         conn->close();
-        //ui->investigationBarC->resetView();
+        // ui->investigationBarC->resetView();
         emit sendConnectionOpen(false);
         emit sendEnablePumpButtons(false);
     }
 }
 
-void MainWindow::closeSerialConnection(){
+void MainWindow::closeSerialConnection() {
     writeToSerialPort(SerConnConstants::END_DATA_TRANSMISSION);
     ui->conBar->setDisconnected();
     conn->close();
     readSerialData = false;
 }
 
-void MainWindow::serialReceived(){
+void MainWindow::serialReceived() {
 
     if (readSerialData) {
         // read serial data and append to buffer
@@ -230,7 +224,7 @@ void MainWindow::serialReceived(){
         // split the buffer by exit chars
         QStringList bufferSplit = serialBuffer.split("\r\n");
 
-        if (bufferSplit.length() < 3){
+        if (bufferSplit.length() < 3) {
             // wait until buffer has three chunks
             serialData = conn->readAll();
             serialBuffer += QString::fromStdString(serialData.toStdString());
@@ -241,7 +235,7 @@ void MainWindow::serialReceived(){
     }
 }
 
-void MainWindow::processIncomingData(QString data_string){
+void MainWindow::processIncomingData(QString data_string) {
 
     // ####### edit event code
 
@@ -255,15 +249,17 @@ void MainWindow::processIncomingData(QString data_string){
     ui->graphDisplay->addDataset(curr_dataset);
     ui->pump->setPumpInfusionRate(infusion_flowrate);
 
-    if (write_to_csv){data_writer.writeDataToCSV(curr_dataset);}
+    if (write_to_csv) {
+        data_writer.writeDataToCSV(curr_dataset);
+    }
 
     serialBuffer = "";
     event_code = EventConstants::NO_EVENT;
 }
 
-void MainWindow::writeToSerialPort(int value){
+void MainWindow::writeToSerialPort(int value) {
     QByteArray q_b;
-    if(conn->isOpen()){
+    if (conn->isOpen()) {
         q_b.setNum(value);
         q_b.append('\n');
         conn->write(q_b);
@@ -275,12 +271,12 @@ void MainWindow::writeToSerialPort(int value){
 
 // 3 patient controls
 
-void MainWindow::receiveOpenNewPatient(){
+void MainWindow::receiveOpenNewPatient() {
     qInfo() << "Creating new patient popup";
     PatientInfoEntry patientInfoPopup;
     int dialogCode = patientInfoPopup.exec();
 
-    if(dialogCode == QDialog::Accepted) {
+    if (dialogCode == QDialog::Accepted) {
         patient_entered = true;
         qInfo() << "Patient information entered successfully";
         std::map<QString, QString> patient_information = patientInfoPopup.getPatientInformation();
@@ -297,12 +293,12 @@ void MainWindow::receiveOpenNewPatient(){
     }
 }
 
-void MainWindow::receiveOpenExisitngPatient(){
+void MainWindow::receiveOpenExisitngPatient() {
     closeSerialConnection();
     // add code to clear graph and load patient
 }
 
-void MainWindow::receiveClosePatient(){
+void MainWindow::receiveClosePatient() {
     /*ui->investigationBarC->resetView();
     if (test == "UDS Investigation"){
         emit sendSetUDSView();
@@ -314,25 +310,27 @@ void MainWindow::receiveClosePatient(){
 }
 
 // 4 Manage recording
-void MainWindow::recieveStartRecordingCSV(){
+void MainWindow::recieveStartRecordingCSV() {
     emit sendEnterRecording(true);
     data_writer.createCSVFile();
-    write_to_csv=data_writer.checkCSVCreated();
+    write_to_csv = data_writer.checkCSVCreated();
 }
 
-void MainWindow::recieveStopRecordingCSV(){
+void MainWindow::recieveStopRecordingCSV() {
     emit sendEnterRecording(false);
     data_writer.setEndCSVRecording();
-    write_to_csv=data_writer.checkCSVCreated();
+    write_to_csv = data_writer.checkCSVCreated();
 }
 
-void MainWindow::recieveEventCode(int code){
+void MainWindow::recieveEventCode(int code) {
     ui->graphDisplay->createEventLine(EventConstants::EVENTS.at(code));
     event_code = code;
 }
 
-void MainWindow::recieveZeroPressure(){data_reader.setZeroPressure();}
+void MainWindow::recieveZeroPressure() {
+    data_reader.setZeroPressure();
+}
 
-void MainWindow::recievePumpValue(int value){
+void MainWindow::recievePumpValue(int value) {
     writeToSerialPort(value);
 }

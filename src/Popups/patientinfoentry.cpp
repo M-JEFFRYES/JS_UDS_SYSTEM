@@ -1,40 +1,35 @@
 #include "patientinfoentry.h"
 #include "ui_patientinfoentry.h"
 
-
 #include <QDate>
 #include <map>
 
 #include <QDebug>
 
-PatientInfoEntry::PatientInfoEntry(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PatientInfoEntry)
-{
+PatientInfoEntry::PatientInfoEntry(QWidget* parent) : QDialog(parent),
+                                                      ui(new Ui::PatientInfoEntry) {
     ui->setupUi(this);
     setInvestigationDate();
 
     connect(ui->okButton, &QPushButton::clicked, this, &PatientInfoEntry::submitPatientInfoEntry);
     connect(ui->cancelButton, &QPushButton::clicked, this, &PatientInfoEntry::cancelPatientInfoEntry);
-
 }
 
-PatientInfoEntry::~PatientInfoEntry()
-{
+PatientInfoEntry::~PatientInfoEntry() {
     delete ui;
 }
 
-void PatientInfoEntry::setInvestigationDate(){
+void PatientInfoEntry::setInvestigationDate() {
     investigationDate = QDate::currentDate().toString("dd/MM/yyyy");
     ui->dateLabel->setText(investigationDate);
 }
 
-void PatientInfoEntry::calculateAge(){
+void PatientInfoEntry::calculateAge() {
     int days = QDate::currentDate().toJulianDay() - ui->dobInput->date().toJulianDay();
-    currentAge = (double) days / 365.25;
+    currentAge = (double)days / 365.25;
 }
 
-void PatientInfoEntry::retrievePatientInformation(){
+void PatientInfoEntry::retrievePatientInformation() {
     bool missing_items = false;
     QString msg = "Missing: ";
 
@@ -48,46 +43,42 @@ void PatientInfoEntry::retrievePatientInformation(){
     patient_data["dob"] = ui->dobInput->date().toString("dd/MM/yyyy");
     patient_data["age"] = QString::number(currentAge);
 
-
-    if (patient_data["first_name"].length() == 0){
+    if (patient_data["first_name"].length() == 0) {
         missing_items = true;
         msg = msg + "First Name, ";
     }
-    if (patient_data["surname"].length() == 0){
+    if (patient_data["surname"].length() == 0) {
         missing_items = true;
         msg = msg + "Surame, ";
     }
-    if (patient_data["hospital_number"].length() == 0){
+    if (patient_data["hospital_number"].length() == 0) {
         missing_items = true;
         msg = msg + "Hospital No, ";
     }
 
-    if (missing_items){
+    if (missing_items) {
         ui->missingLabel->setText(msg);
     }
 
     patientInfoComplete = !missing_items;
-
 }
 
-void PatientInfoEntry::submitPatientInfoEntry()
-{
+void PatientInfoEntry::submitPatientInfoEntry() {
     retrievePatientInformation();
-    if (patientInfoComplete){
+    if (patientInfoComplete) {
         done(QDialog::Accepted);
     }
 }
 
-void PatientInfoEntry::cancelPatientInfoEntry()
-{
+void PatientInfoEntry::cancelPatientInfoEntry() {
     done(QDialog::Rejected);
 }
 
-std::map<QString, QString> PatientInfoEntry::getPatientInformation(){
+std::map<QString, QString> PatientInfoEntry::getPatientInformation() {
     return patient_data;
 }
 
-QString PatientInfoEntry::getWindowTitle(){
+QString PatientInfoEntry::getWindowTitle() {
     QString title = "UDS Investigaion: ";
     title += investigationDate;
     title += " - ";

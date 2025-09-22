@@ -9,8 +9,7 @@
 
 QString logFileName = "../JS_UDSWB_LOGGING.log";
 
-void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
+void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg) {
     // Format data for logging String
     QHash<QtMsgType, QString> msgLevelHash({{QtDebugMsg, "Debug"}, {QtInfoMsg, "Info"}, {QtWarningMsg, "Warning"}, {QtCriticalMsg, "Critical"}, {QtFatalMsg, "Fatal"}});
     QTime time = QTime::currentTime();
@@ -18,7 +17,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     QString logLevelName = msgLevelHash[type];
 
     // Create logging string
-    QString logging_line = QString("%1 %2: %3 (File: %4, Line: %5, Function: %6)").arg(formattedTime, logLevelName, msg,  context.file, QString::number(context.line), context.function);
+    QString logging_line = QString("%1 %2: %3 (File: %4, Line: %5, Function: %6)").arg(formattedTime, logLevelName, msg, context.file, QString::number(context.line), context.function);
 
     // append log string to file
     QFile loggingFile(logFileName);
@@ -26,20 +25,18 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     QTextStream ts(&loggingFile);
     ts << logging_line << Qt::endl;
 
-    if (type == QtFatalMsg) {abort();}
-
+    if (type == QtFatalMsg) {
+        abort();
+    }
 }
 
-void initMessageHandling(){
+void initMessageHandling() {
     QFile f(logFileName);
     f.resize(0);
     qInstallMessageHandler(myMessageOutput);
 }
 
-
-
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     initMessageHandling();
 
     QApplication a(argc, argv);

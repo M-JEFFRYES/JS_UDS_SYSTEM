@@ -9,23 +9,22 @@ namespace Ui {
 class PatientInfoEntry;
 }
 
-class PatientInfoEntry : public QDialog
-{
+class PatientInfoEntry : public QDialog {
     Q_OBJECT
 
-public:
-    explicit PatientInfoEntry(QWidget *parent = nullptr);
+  public:
+    explicit PatientInfoEntry(QWidget* parent = nullptr);
     ~PatientInfoEntry();
 
     std::map<QString, QString> getPatientInformation();
     QString getWindowTitle();
 
-private slots:
+  private slots:
     void submitPatientInfoEntry();
     void cancelPatientInfoEntry();
 
-private:
-    Ui::PatientInfoEntry *ui;
+  private:
+    Ui::PatientInfoEntry* ui;
 
     void setInvestigationDate();
     void calculateAge();

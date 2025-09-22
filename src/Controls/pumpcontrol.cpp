@@ -3,20 +3,17 @@
 
 #include "AppConstants.h"
 
-PumpControl::PumpControl(QWidget *parent) :
-    QFrame(parent),
-    ui(new Ui::PumpControl)
-{
+PumpControl::PumpControl(QWidget* parent) : QFrame(parent),
+                                            ui(new Ui::PumpControl) {
     ui->setupUi(this);
     initBar();
 }
 
-PumpControl::~PumpControl()
-{
+PumpControl::~PumpControl() {
     delete ui;
 }
 
-void PumpControl::initBar(){
+void PumpControl::initBar() {
     connect(ui->addOneButton, &QPushButton::clicked, this, &PumpControl::addOneToPump);
     connect(ui->addTenButton, &QPushButton::clicked, this, &PumpControl::addTenToPump);
     connect(ui->minusOneButton, &QPushButton::clicked, this, &PumpControl::minusOneToPump);
@@ -25,7 +22,7 @@ void PumpControl::initBar(){
     enablePump(false);
 }
 
-void PumpControl::enablePump(bool enable){
+void PumpControl::enablePump(bool enable) {
     ui->flowrateLCD->display(0.0);
     ui->addOneButton->setEnabled(enable);
     ui->addTenButton->setEnabled(enable);
@@ -33,22 +30,22 @@ void PumpControl::enablePump(bool enable){
     ui->minusTenButton->setEnabled(enable);
 }
 
-void PumpControl::resetPump(){
+void PumpControl::resetPump() {
     pump_rate_arduino_input = PumpConstants::PUMP_INPUT_MIN;
 }
 
-void PumpControl::setTestingType(QString test){
-    if (test == TestTypeConstants::UDS_INVESTIGATION_DESC || test == TestTypeConstants::VOLUME_INFUSED_TEST_DESC || test == TestTypeConstants::INFUSION_RATE_TEST_DESC){
+void PumpControl::setTestingType(QString test) {
+    if (test == TestTypeConstants::UDS_INVESTIGATION_DESC || test == TestTypeConstants::VOLUME_INFUSED_TEST_DESC || test == TestTypeConstants::INFUSION_RATE_TEST_DESC) {
         enablePump(true);
     }
 }
 
-void PumpControl::setExitTestingType(){
+void PumpControl::setExitTestingType() {
     resetPump();
     enablePump(false);
 }
 
-void PumpControl::addOneToPump(){
+void PumpControl::addOneToPump() {
     pump_rate_arduino_input++;
     if (pump_rate_arduino_input > PumpConstants::PUMP_INPUT_MAX) {
         pump_rate_arduino_input = PumpConstants::PUMP_INPUT_MAX;
@@ -56,7 +53,7 @@ void PumpControl::addOneToPump(){
     emit sendPumpRate(pump_rate_arduino_input);
 }
 
-void PumpControl::addTenToPump(){
+void PumpControl::addTenToPump() {
     pump_rate_arduino_input = pump_rate_arduino_input + 10;
     if (pump_rate_arduino_input > PumpConstants::PUMP_INPUT_MAX) {
         pump_rate_arduino_input = PumpConstants::PUMP_INPUT_MAX;
@@ -64,7 +61,7 @@ void PumpControl::addTenToPump(){
     emit sendPumpRate(pump_rate_arduino_input);
 }
 
-void PumpControl::minusOneToPump(){
+void PumpControl::minusOneToPump() {
     pump_rate_arduino_input--;
     if (pump_rate_arduino_input < PumpConstants::PUMP_INPUT_MIN) {
         pump_rate_arduino_input = PumpConstants::PUMP_INPUT_MIN;
@@ -72,7 +69,7 @@ void PumpControl::minusOneToPump(){
     emit sendPumpRate(pump_rate_arduino_input);
 }
 
-void PumpControl::minusTenToPump(){
+void PumpControl::minusTenToPump() {
     pump_rate_arduino_input = pump_rate_arduino_input - 10;
     if (pump_rate_arduino_input < PumpConstants::PUMP_INPUT_MIN) {
         pump_rate_arduino_input = PumpConstants::PUMP_INPUT_MIN;
@@ -80,15 +77,17 @@ void PumpControl::minusTenToPump(){
     emit sendPumpRate(pump_rate_arduino_input);
 }
 
-int PumpControl::getPumpArduinoInput(){return pump_rate_arduino_input;}
+int PumpControl::getPumpArduinoInput() {
+    return pump_rate_arduino_input;
+}
 
-void PumpControl::setPumpButtonsEnabled(bool enabled){
+void PumpControl::setPumpButtonsEnabled(bool enabled) {
     ui->addOneButton->setEnabled(enabled);
     ui->addTenButton->setEnabled(enabled);
     ui->minusOneButton->setEnabled(enabled);
     ui->minusTenButton->setEnabled(enabled);
 }
 
-void PumpControl::setPumpInfusionRate(double infusion_rate){
+void PumpControl::setPumpInfusionRate(double infusion_rate) {
     ui->flowrateLCD->display(infusion_rate);
 }

@@ -11,12 +11,11 @@ namespace Ui {
 class ConnectionBar;
 }
 
-class ConnectionBar : public QFrame
-{
+class ConnectionBar : public QFrame {
     Q_OBJECT
 
-public:
-    explicit ConnectionBar(QWidget *parent = nullptr);
+  public:
+    explicit ConnectionBar(QWidget* parent = nullptr);
     ~ConnectionBar();
 
     void setBarHeights(int minimum, int maximum);
@@ -27,21 +26,19 @@ public:
     QPushButton* getRefreshButton();
     QString getSelectedPort();
 
-
-
-public slots:
+  public slots:
     void receiveTestSelected(bool selected);
     void setEnterRecordingMode(bool start);
 
-signals:
+  signals:
     void sendSerialConnectionMade(bool);
 
-private slots:
+  private slots:
     void on_connectButton_clicked();
     void on_refreshButton_clicked();
 
-private:
-    Ui::ConnectionBar *ui;
+  private:
+    Ui::ConnectionBar* ui;
     void initButtons();
     void setConnected();
 

@@ -5,9 +5,8 @@
 #include <iostream>
 #include <fstream>
 
-class WriteData
-{
-public:
+class WriteData {
+  public:
     WriteData();
     void setFileDirectory(QString dir_path);
     void loadMetaData(std::map<QString, QString> meta_data);
@@ -21,12 +20,10 @@ public:
     bool checkCSVCreated();
     void setEndCSVRecording();
 
-private:
-
+  private:
     void createFileName();
     void createMetaDataLines();
     QString getDataLine(std::map<QString, double> data);
-
 
     QVector<QString> variables;
     int no_display_names;

@@ -3,7 +3,6 @@
 
 class SmokeTest : public QObject {
     Q_OBJECT
-private slots:
+  private slots:
     void math_works();
 };
-

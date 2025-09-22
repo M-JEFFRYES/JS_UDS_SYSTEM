@@ -3,15 +3,13 @@
 #include "AppConstants.h"
 #include <QDebug>
 
-
-ReadData::ReadData()
-{
+ReadData::ReadData() {
     initCalculationArrays();
 }
 
 // CALCULATIONS
 
-void ReadData::initCalculationArrays(){
+void ReadData::initCalculationArrays() {
     time_values = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     vi_values = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     vv_values = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -23,20 +21,20 @@ void ReadData::initCalculationArrays(){
     q_flowrate = 0;
 }
 
-void ReadData::updateTimeValues(double time){
+void ReadData::updateTimeValues(double time) {
     time_values.pop_back();
     time_values.prepend(time);
     delta_t = time_values.first() - time_values.last();
 }
 
-void ReadData::updateViValues(double vi){
+void ReadData::updateViValues(double vi) {
     vi_values.pop_back();
     vi_values.prepend(vi);
     delta_vi = vi_values.first() - vi_values.last();
     infusion_flowrate = delta_vi / delta_t;
 }
 
-void ReadData::updateVvValues(double vv){
+void ReadData::updateVvValues(double vv) {
     vv_values.pop_back();
     vv_values.prepend(vv);
     delta_vv = vv_values.first() - vv_values.last();
@@ -57,12 +55,12 @@ void ReadData::setTestingType(const QString& testing_type) {
 
     test_type = testing_type;
     const TestConfig& cfg = it.value();
-    all_variables      = cfg.all;
+    all_variables = cfg.all;
     ser_comm_variables = cfg.sercomm;
-    plot_variables     = cfg.plot;
+    plot_variables = cfg.plot;
 }
 
-void ReadData::readSerialDataset(QString data_string, int event, bool zero_sensors){
+void ReadData::readSerialDataset(QString data_string, int event, bool zero_sensors) {
 
     QStringList valuePairs = data_string.split(";");
     QStringList keyPair;
@@ -70,16 +68,16 @@ void ReadData::readSerialDataset(QString data_string, int event, bool zero_senso
     double value;
     QString variable;
 
-    for (int i=0; i<valuePairs.length(); i++){
+    for (int i = 0; i < valuePairs.length(); i++) {
         keyPair = valuePairs[i].split(",");
         variable = keyPair[0];
         value = keyPair[1].toDouble();
 
-        if (variable=="Time"){
+        if (variable == "Time") {
             value = value / 1000000;
 
-        } else if (variable == "PSENS" || variable == "PBLAD"|| variable == "PABD") {
-            if (zero_sensors){
+        } else if (variable == "PSENS" || variable == "PBLAD" || variable == "PABD") {
+            if (zero_sensors) {
                 channel_zeros[variable] = value;
             }
             value -= channel_zeros[variable];
@@ -92,7 +90,7 @@ void ReadData::readSerialDataset(QString data_string, int event, bool zero_senso
 
     updateTimeValues(current_dataset["Time"]);
 
-    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC){
+    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC) {
         updateViValues(current_dataset["VI"]);
         updateVvValues(current_dataset["VV"]);
 
@@ -100,18 +98,18 @@ void ReadData::readSerialDataset(QString data_string, int event, bool zero_senso
         current_dataset["INFRATE"] = infusion_flowrate;
         current_dataset["PDET"] = current_dataset["PBLAD"] - current_dataset["PABD"];
 
-    } else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC){
+    } else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC) {
         updateVvValues(current_dataset["VV"]);
         current_dataset["Q"] = q_flowrate;
 
-    } else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC || test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC){
+    } else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC || test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC) {
         updateVvValues(current_dataset["VI"]);
         current_dataset["INFRATE"] = infusion_flowrate;
     }
 }
 
-void ReadData::setZeroPressure(){
-    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC){
+void ReadData::setZeroPressure() {
+    if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC) {
         channel_zeros["PBLAD"] = current_dataset["PBLAD"];
         channel_zeros["PABD"] = current_dataset["PABD"];
 
@@ -122,7 +120,9 @@ void ReadData::setZeroPressure(){
 
 // GETTERS
 
-double ReadData::getInfusionFlowrate(){return infusion_flowrate;}
+double ReadData::getInfusionFlowrate() {
+    return infusion_flowrate;
+}
 
 // FUNCTIONALITY
 /*
@@ -210,8 +210,7 @@ void ReadData::setChannelNamesRangesEvents(QVector<QString> names, QVector<QVect
 
 // SLOTS
 
-std::map<QString, double> ReadData::readCurrentDataset(QString data_string, int event, bool zero_channels){
-    readSerialDataset(data_string,event, zero_channels);
+std::map<QString, double> ReadData::readCurrentDataset(QString data_string, int event, bool zero_channels) {
+    readSerialDataset(data_string, event, zero_channels);
     return current_dataset;
 }
-

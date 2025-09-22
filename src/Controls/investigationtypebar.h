@@ -7,27 +7,26 @@ namespace Ui {
 class InvestigationTypeBar;
 }
 
-class InvestigationTypeBar : public QFrame
-{
+class InvestigationTypeBar : public QFrame {
     Q_OBJECT
 
-public:
-    explicit InvestigationTypeBar(QWidget *parent = nullptr);
+  public:
+    explicit InvestigationTypeBar(QWidget* parent = nullptr);
     ~InvestigationTypeBar();
 
-signals:
+  signals:
     void sendTestType(QString);
     void sendTestSelected(bool);
     void sendExitTestType();
 
-public slots:
+  public slots:
     void receiveConnectionOpen(bool open);
 
-private slots:
+  private slots:
     void on_selectTestButton_clicked();
 
-private:
-    Ui::InvestigationTypeBar *ui;
+  private:
+    Ui::InvestigationTypeBar* ui;
     void setTestOptions();
     void setTestSelected();
     void exitTestSelected();
@@ -35,7 +34,6 @@ private:
 
     QString getSelectedTest();
     QString current_test_type;
-
 };
 
 #endif // INVESTIGATIONTYPEBAR_H

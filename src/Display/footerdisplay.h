@@ -7,16 +7,15 @@ namespace Ui {
 class FooterDisplay;
 }
 
-class FooterDisplay : public QFrame
-{
+class FooterDisplay : public QFrame {
     Q_OBJECT
 
-public:
-    explicit FooterDisplay(QWidget *parent = nullptr);
+  public:
+    explicit FooterDisplay(QWidget* parent = nullptr);
     ~FooterDisplay();
 
-private:
-    Ui::FooterDisplay *ui;
+  private:
+    Ui::FooterDisplay* ui;
 };
 
 #endif // FOOTERDISPLAY_H

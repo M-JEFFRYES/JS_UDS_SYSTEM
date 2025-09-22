@@ -7,25 +7,24 @@ namespace Ui {
 class InvestigationBar;
 }
 
-class InvestigationBar : public QFrame
-{
+class InvestigationBar : public QFrame {
     Q_OBJECT
 
-public:
-    explicit InvestigationBar(QWidget *parent = nullptr);
+  public:
+    explicit InvestigationBar(QWidget* parent = nullptr);
     ~InvestigationBar();
     void setExitTestingType();
     void resetView();
 
     void setPatientInfoEntered(bool set);
 
-public slots:
+  public slots:
     void recieveTestingType(QString);
     void recieveSerialConnectionMade(bool);
-    //void setUDSView();
-    //void setTestView();
+    // void setUDSView();
+    // void setTestView();
 
-signals:
+  signals:
     void sendOpenNewPatient();
     void sendOpenExistingPatient();
     void sendClosePatient();
@@ -34,22 +33,20 @@ signals:
     void sendStopRecording();
     void sendZeroPressure();
 
-private slots:
+  private slots:
     void openNewPatient();
     void openExistingPatient();
     void recordInvestigationControl();
     void setZeroPressure();
     void logSensation();
 
-
-private:
-    Ui::InvestigationBar *ui;
+  private:
+    Ui::InvestigationBar* ui;
 
     void initBar();
 
     QString test_type;
     int sensation_current_event_code;
-
 };
 
 #endif // INVESTIGATIONBAR_H

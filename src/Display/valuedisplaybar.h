@@ -9,12 +9,11 @@ namespace Ui {
 class ValueDisplayBar;
 }
 
-class ValueDisplayBar : public QFrame
-{
+class ValueDisplayBar : public QFrame {
     Q_OBJECT
 
-public:
-    explicit ValueDisplayBar(QWidget *parent = nullptr);
+  public:
+    explicit ValueDisplayBar(QWidget* parent = nullptr);
     ~ValueDisplayBar();
 
     void setTestingType(QString test);
@@ -23,8 +22,8 @@ public:
     void setDisplayChannels(QVector<QString> display_names);
     void updateNumbers(std::map<QString, double> data);
 
-private:
-    Ui::ValueDisplayBar *ui;
+  private:
+    Ui::ValueDisplayBar* ui;
 
     void initDisplays();
 
@@ -37,10 +36,7 @@ private:
     std::map<QString, double> current_dataset;
     std::map<QString, int> variable_mapping;
 
-
     QVector<QPen> var_colours;
-
-
 };
 
 #endif // VALUEDISPLAYBAR_H

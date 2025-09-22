@@ -12,25 +12,26 @@
 #include <DAQ/readdata.h>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
+  public:
+    MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-signals:
+  signals:
     void sendConnectionOpen(bool);
     void sendSetUDSView();
     void sendSetTestView();
     void sendEnterRecording(bool);
     void sendEnablePumpButtons(bool);
 
-private slots:
+  private slots:
     void serialReceived();
     void receiveTestType(QString);
     void receiveExitTestType();
@@ -39,13 +40,13 @@ private slots:
     void receiveClosePatient();
     void recieveStartRecordingCSV();
     void recieveStopRecordingCSV();
-    //void recieveEventCode(int);
+    // void recieveEventCode(int);
     void recieveEventCode(int);
     void recieveZeroPressure();
     void recievePumpValue(int);
 
-private:
-    Ui::MainWindow *ui;
+  private:
+    Ui::MainWindow* ui;
     void initConnections();
     int calculatePixels(double length, double percentage);
     void calculateObjectSizes();
@@ -69,7 +70,7 @@ private:
     bool to_zero_sensors;
 
     // connection
-    QSerialPort *conn;
+    QSerialPort* conn;
     QString portName;
     int baudRate;
     QString dataBits;

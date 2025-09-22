@@ -4,13 +4,10 @@
 #include <QObject>
 #include <QVector>
 
-
-class ReadData
-{
-public:
+class ReadData {
+  public:
     ReadData();
     void setTestingType(const QString& testing_type);
-
 
     std::map<QString, double> readCurrentDataset(QString data_string, int event, bool zero_channels);
     std::map<QString, double> getChannelZeros();
@@ -19,17 +16,16 @@ public:
     QVector<QString> getEventLabels();
     double getInfusionFlowrate();
 
-public slots:
+  public slots:
     void setZeroPressure();
 
-private:
+  private:
     void initCalculationArrays();
     void updateTimeValues(double time);
     void updateViValues(double vi);
     void updateVvValues(double vv);
 
-
-    //void setChannelNamesRangesEvents(QVector<QString> names, QVector<QVector<double>> ranges, QVector<QString> event_codes, QVector<QString> event_labels, QVector<int> channel_plot_numbers);
+    // void setChannelNamesRangesEvents(QVector<QString> names, QVector<QVector<double>> ranges, QVector<QString> event_codes, QVector<QString> event_labels, QVector<int> channel_plot_numbers);
     void readSerialDataset(QString data_string, int event, bool zero_sensors);
 
     QString test_type;
@@ -40,8 +36,6 @@ private:
     std::map<QString, double> channel_zeros;
 
     std::map<QString, double> temp_dataset;
-
-
 
     int number_data_channels;
     QVector<QString> channel_var_names;
