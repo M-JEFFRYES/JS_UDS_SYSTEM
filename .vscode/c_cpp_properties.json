@@ -1,0 +1,36 @@
+{
+	"version": 4,
+	"configurations": [
+		{
+			"name": "mac-qt5-manual",
+			"intelliSenseMode": "macos-clang-arm64",
+			"compilerPath": "/usr/bin/clang++",
+			"cppStandard": "gnu++11",
+
+			"includePath": [
+				"${workspaceFolder}/src",
+				"${workspaceFolder}/src/**",
+				"${workspaceFolder}/libcore",
+				// Qt 5 via Homebrew (adjust version if different)
+				"/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtCore.framework/Headers",
+				"/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers",
+				"/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers",
+				"/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtPrintSupport.framework/Headers",
+				"/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtSerialPort.framework/Headers",
+				"/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtTest.framework/Headers"
+			],
+			"macFrameworkPath": [
+				"/opt/homebrew/Cellar/qt@5/5.15.17/lib",
+				"/Library/Frameworks",
+				"/System/Library/Frameworks"
+			],
+			"defines": [
+				"QT_CORE_LIB",
+				"QT_GUI_LIB",
+				"QT_WIDGETS_LIB",
+				"QT_TESTLIB_LIB",
+				"QT_NO_DEBUG"
+			]
+		}
+	]
+}
