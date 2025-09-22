@@ -41,4 +41,4 @@ compile/installer_setup_script_32-bit.iss
 JS_UDS_UI_Release_32-bit/release/JS_UDS_UI.exe
 
 # MacOS
-build-mac/
+build/

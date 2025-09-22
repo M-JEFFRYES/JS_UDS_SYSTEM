@@ -1,58 +1,27 @@
-QT       += core gui serialport
+TEMPLATE = app
+CONFIG  += c++11
+QT      += core gui widgets printsupport serialport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+# Clean output layout
+OBJECTS_DIR = $$OUT_PWD/tmp/obj
+MOC_DIR     = $$OUT_PWD/tmp/moc
+RCC_DIR     = $$OUT_PWD/tmp/rcc
+UI_DIR      = $$OUT_PWD/tmp/ui
+DESTDIR     = $$OUT_PWD/out
 
-CONFIG += c++11
+# App name / bundle name
+TARGET = JS_UDS_UI
 
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# Common files from src/
+SRC_DIR = $$PWD
+include($$SRC_DIR/files.pri)
 
-SOURCES += \
-    Controls/investigationbar.cpp \
-    Controls/investigationtypebar.cpp \
-    Controls/pumpcontrol.cpp \
-    DAQ/connectionbar.cpp \
-    DAQ/readdata.cpp \
-    DAQ/writedata.cpp \
-    Display/footerdisplay.cpp \
-    Display/tracesdisplay.cpp \
-    Display/valuedisplaybar.cpp \
-    Popups/patientinfoentry.cpp \
-    libs/qcustomplot.cpp \
-    main.cpp \
-    mainwindow.cpp
+# App entry point
+SOURCES += $$SRC_DIR/main.cpp
 
-HEADERS += \
-    Controls/investigationbar.h \
-    Controls/investigationtypebar.h \
-    Controls/pumpcontrol.h \
-    AppConstants.h \
-    DAQ/connectionbar.h \
-    DAQ/readdata.h \
-    DAQ/writedata.h \
-    Display/footerdisplay.h \
-    Display/tracesdisplay.h \
-    Display/valuedisplaybar.h \
-    Popups/patientinfoentry.h \
-    libs/qcustomplot.h \
-    mainwindow.h
+# Link to the static lib built in ../libcore
+INCLUDEPATH += $$PWD $$PWD/../libcore
+LIBS += -L$$OUT_PWD/../libcore/out -luds_core
 
-FORMS += \
-    Controls/investigationbar.ui \
-    Controls/investigationtypebar.ui \
-    Controls/pumpcontrol.ui \
-    DAQ/connectionbar.ui \
-    Display/footerdisplay.ui \
-    Display/tracesdisplay.ui \
-    Display/valuedisplaybar.ui \
-    Popups/patientinfoentry.ui \
-    mainwindow.ui
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
-RESOURCES += \
-    resources.qrc
+# (Optional) silence SDK version warnings on macOS
+# CONFIG += sdk_no_version_check
