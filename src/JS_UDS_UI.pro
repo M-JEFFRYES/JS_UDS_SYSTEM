@@ -29,7 +29,6 @@ HEADERS += \
     Controls/pumpcontrol.h \
     AppConstants.h \
     DAQ/connectionbar.h \
-    DAQ/mainwindow.h \
     DAQ/readdata.h \
     DAQ/writedata.h \
     Display/footerdisplay.h \
