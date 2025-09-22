@@ -1,7 +1,8 @@
 #include "readdata.h"
-
+#include "DAQ/TestConfigs.h"
 #include "AppConstants.h"
 #include <QDebug>
+
 
 ReadData::ReadData()
 {
@@ -43,34 +44,22 @@ void ReadData::updateVvValues(double vv){
 }
 
 // FUNCTIONALITY
-void ReadData::setTestingType(QString testing_type){
-    test_type = testing_type;
+void ReadData::setTestingType(const QString& testing_type) {
+    if (test_type == testing_type)
+        return;
 
-    if (test_type == TestTypeConstants::PRESSURE_TEST_DESC){
-        all_variables = PressureConsts::VARS_ALL;
-        ser_comm_variables = PressureConsts::VARS_SERCOMM;
-        plot_variables = PressureConsts::VARS_PLOT;
-
-    }  else if (test_type == TestTypeConstants::VOLUME_VOID_TEST_DESC){
-        all_variables = PressureConsts::VARS_ALL;
-        ser_comm_variables = PressureConsts::VARS_SERCOMM;
-        plot_variables = PressureConsts::VARS_PLOT;
-
-    }  else if (test_type == TestTypeConstants::VOLUME_INFUSED_TEST_DESC){
-        all_variables = PressureConsts::VARS_ALL;
-        ser_comm_variables = PressureConsts::VARS_SERCOMM;
-        plot_variables = PressureConsts::VARS_PLOT;
-
-    }  else if (test_type == TestTypeConstants::INFUSION_RATE_TEST_DESC){
-        all_variables = PressureConsts::VARS_ALL;
-        ser_comm_variables = PressureConsts::VARS_SERCOMM;
-        plot_variables = PressureConsts::VARS_PLOT;
-
-    }  else if (test_type == TestTypeConstants::UDS_INVESTIGATION_DESC){
-        all_variables = PressureConsts::VARS_ALL;
-        ser_comm_variables = PressureConsts::VARS_SERCOMM;
-        plot_variables = PressureConsts::VARS_PLOT;
+    const auto it = kTestConfigs.constFind(testing_type);
+    if (it == kTestConfigs.cend()) {
+        qWarning() << "Unknown test type:" << testing_type
+                   << "— keeping previous type:" << test_type;
+        return; // or choose a default
     }
+
+    test_type = testing_type;
+    const TestConfig& cfg = it.value();
+    all_variables      = cfg.all;
+    ser_comm_variables = cfg.sercomm;
+    plot_variables     = cfg.plot;
 }
 
 void ReadData::readSerialDataset(QString data_string, int event, bool zero_sensors){

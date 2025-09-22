@@ -4,6 +4,7 @@
 class ReadDataTest : public QObject {
     Q_OBJECT
 private slots:
-    void math_works();
+    void init_setsZeroes();
+    void setTestingType_routesDerivedFields();
 };
 

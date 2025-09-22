@@ -16,6 +16,7 @@ SOURCES += \
     $$SRC_DIR/DAQ/connectionbar.cpp \
     $$SRC_DIR/DAQ/readdata.cpp \
     $$SRC_DIR/DAQ/writedata.cpp \
+    $$SRC_DIR/DAQ/testconfigs.cpp \
     $$SRC_DIR/Display/footerdisplay.cpp \
     $$SRC_DIR/Display/tracesdisplay.cpp \
     $$SRC_DIR/Display/valuedisplaybar.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     $$SRC_DIR/DAQ/connectionbar.h \
     $$SRC_DIR/DAQ/readdata.h \
     $$SRC_DIR/DAQ/writedata.h \
+    $$SRC_DIR/DAQ/testconfigs.h \
     $$SRC_DIR/Display/footerdisplay.h \
     $$SRC_DIR/Display/tracesdisplay.h \
     $$SRC_DIR/Display/valuedisplaybar.h \
