@@ -1,5 +1,5 @@
 #include "readdata.h"
-#include "DAQ/TestConfigs.h"
+#include "DAQ/testconfigs.h"
 #include "AppConstants.h"
 #include <QDebug>
 
