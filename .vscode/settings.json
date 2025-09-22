@@ -1,0 +1,20 @@
+{
+	"C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+
+	"C_Cpp.codeAnalysis.clangTidy.enabled": true,
+	"C_Cpp.codeAnalysis.clangTidy.path": "/opt/homebrew/opt/llvm/bin/clang-tidy",
+	"C_Cpp.codeAnalysis.clangTidy.useBuildPath": true,
+	"C_Cpp.codeAnalysis.clangTidy.checks": "bugprone-*,performance-*,readability-*,modernize-*,-modernize-use-trailing-return-type",
+	"C_Cpp.codeAnalysis.clangTidy.headerFilter": "${workspaceFolder}/(src|tests)/.*",
+	"C_Cpp.codeAnalysis.clangTidy.args": [
+		"--warnings-as-errors=-*", // don’t Werror everything
+		"--extra-arg=-Wno-unused-parameter"
+	],
+
+	"C_Cpp.formatting": "clangFormat",
+	"C_Cpp.clang_format_path": "/opt/homebrew/opt/llvm/bin/clang-format",
+
+	// Optional quality-of-life
+	"files.exclude": {"**/build": true, "**/.qmake.stash": true},
+	"C_Cpp.intelliSenseEngineFallback": "Enabled"
+}

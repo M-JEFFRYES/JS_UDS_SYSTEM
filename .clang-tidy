@@ -1,0 +1,11 @@
+Checks: >
+    bugprone-*,
+    performance-*,
+    readability-*,
+    modernize-*,
+    -modernize-use-trailing-return-type,
+    -modernize-use-auto           # Qt containers often clearer without auto
+WarningsAsErrors: ''
+HeaderFilterRegex: 'src/|tests/'
+AnalyzeTemporaryDtors: false
+FormatStyle: none
