@@ -9,7 +9,7 @@ class ReadData
 {
 public:
     ReadData();
-    void setTestingType(QString testing_type);
+    void setTestingType(const QString& testing_type);
 
 
     std::map<QString, double> readCurrentDataset(QString data_string, int event, bool zero_channels);
